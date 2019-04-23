@@ -10,17 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
         <activity
             android:name="oscar.gmail.com.causality.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="oscar.gmail.com.causality.NewWordActivity"></activity>
+
+        <activity android:name="oscar.gmail.com.causality.NewQuestionActivity"></activity>
     </application>
 
 </manifest>

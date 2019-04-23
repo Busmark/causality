@@ -18,26 +18,30 @@ package oscar.gmail.com.causality;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.List;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
-    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
+    private final String TAG = "mainA";
 
-    private WordViewModel mWordViewModel;
+    public static final int NEW_QUESTION_ACTIVITY_REQUEST_CODE = 1;
+
+    public QuestionViewModel mQuestionViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +52,21 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final WordListAdapter adapter = new WordListAdapter(this);
+        final QuestionListAdapter adapter = new QuestionListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Get a new or existing ViewModel from the ViewModelProvider.
-        mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
+        mQuestionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
 
-        // Add an observer on the LiveData returned by getAlphabetizedWords.
+        // Add an observer on the LiveData returned by getAlphabetizedQuestions.
         // The onChanged() method fires when the observed data changes and the activity is
         // in the foreground.
-        mWordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
+        mQuestionViewModel.getAllQuestions().observe(this, new Observer<List<Question>>() {
             @Override
-            public void onChanged(@Nullable final List<Word> words) {
-                // Update the cached copy of the words in the adapter.
-                adapter.setWords(words);
+            public void onChanged(@Nullable final List<Question> questions) {
+                // Update the cached copy of the questions in the adapter.
+                adapter.setQuestions(questions);
             }
         });
 
@@ -70,18 +74,41 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewWordActivity.class);
-                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
+                Intent intent = new Intent(MainActivity.this, NewQuestionActivity.class);
+                startActivityForResult(intent, NEW_QUESTION_ACTIVITY_REQUEST_CODE);
             }
         });
+
+//      Skapa upp en Notification som startar en Activity
+        //todo: kan aktiviteten jag startar upp vara samma som används i NewQuestionActivity, fast utan
+        //att köra aktiviteten i foreground?
+        QuestionNotification.createNotificationChannel(this);
+        QuestionNotification.createNotification(this);
+
+//      skapar upp en AlertDialog som sparar ner svaret till databasen
+        final QuestionNotification qn = new QuestionNotification();
+        AlertDialog ad = qn.getAlertDialogWithMultipleList(this);
+        ad.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+               Question question = new Question("" + qn.getButtonText());
+               mQuestionViewModel.insert(question);
+            }
+        });
+        ad.show();
+
+        Log.i(TAG, "end of onCreate");
+
     }
+
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Word word = new Word(data.getStringExtra(NewWordActivity.EXTRA_REPLY));
-            mWordViewModel.insert(word);
+        if (requestCode == NEW_QUESTION_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Question question = new Question(data.getStringExtra(NewQuestionActivity.EXTRA_REPLY));
+            mQuestionViewModel.insert(question);
         } else {
             Toast.makeText(
                     getApplicationContext(),
@@ -89,4 +116,5 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
     }
+
 }

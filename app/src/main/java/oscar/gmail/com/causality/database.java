@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.question;
+package oscar.gmail.com.causality;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -8,21 +8,24 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import oscar.gmail.com.causality.question.Effect;
+import oscar.gmail.com.causality.question.EffectDao;
 
-@Database(entities = {Question.class}, version = 1, exportSchema = false)
-public abstract class QuestionDatabase extends RoomDatabase {
 
-    public abstract QuestionDao questionDao();
+@Database(entities = {Effect.class}, version = 1, exportSchema = false)
+public abstract class database extends RoomDatabase {
+
+    public abstract EffectDao questionDao();
 
     // marking the instance as volatile to ensure atomic access to the variable
-    private static volatile QuestionDatabase INSTANCE;
+    private static volatile database INSTANCE;
 
-    static QuestionDatabase getDatabase(final Context context) {
+    static database getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (QuestionDatabase.class) {
+            synchronized (database.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            QuestionDatabase.class, "question_database")
+                            database.class, "question_database")
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this codelab.
                             .fallbackToDestructiveMigration()
@@ -48,7 +51,7 @@ public abstract class QuestionDatabase extends RoomDatabase {
             super.onOpen(db);
             // If you want to keep the data through app restarts,
             // comment out the following line.
-            new QuestionDatabase.PopulateDbAsync(INSTANCE).execute();
+            new database.PopulateDbAsync(INSTANCE).execute();
         }
     };
 
@@ -58,9 +61,9 @@ public abstract class QuestionDatabase extends RoomDatabase {
      */
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final QuestionDao mDao;
+        private final EffectDao mDao;
 
-        PopulateDbAsync(QuestionDatabase db) {
+        PopulateDbAsync(database db) {
             mDao = db.questionDao();
         }
 
@@ -70,10 +73,10 @@ public abstract class QuestionDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
 
-            Question question = new Question("När gick jag till sängs igår?");
-            mDao.insert(question);
-            question = new Question("Kände jag mig utvilad?");
-            mDao.insert(question);
+            Effect effect = new Effect("När gick jag till sängs igår?");
+            mDao.insert(effect);
+            effect = new Effect("Kände jag mig utvilad?");
+            mDao.insert(effect);
             return null;
         }
     }

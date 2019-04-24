@@ -24,7 +24,7 @@ So, we are leaving the template code in. -->
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="oscar.gmail.com.causality.MainActivity"
+    tools:context="oscar.gmail.com.causality.ui.MainActivity"
     android:background="@android:color/darker_gray"
     >
 

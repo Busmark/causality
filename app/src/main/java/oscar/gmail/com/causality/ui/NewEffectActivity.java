@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class NewQuestionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+import oscar.gmail.com.causality.R;
+
+public class NewEffectActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private final String TAG = "qActivity";
 
 
-    public static final String EXTRA_REPLY = "Question";
+    public static final String EXTRA_REPLY = "Effect";
     public static final String EXTRA_INTERVAL = "Interval";
 
     private EditText mEditQuestionView;
@@ -26,7 +28,7 @@ public class NewQuestionActivity extends AppCompatActivity implements AdapterVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_question);
+        setContentView(R.layout.activity_new_effect);
         mEditQuestionView = findViewById(R.id.edit_question);
 
 

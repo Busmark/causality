@@ -6,45 +6,47 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+import oscar.gmail.com.causality.database;
 
-public class QuestionRepository {
 
-    private QuestionDao mQuestionDao;
-    private LiveData<List<Question>> mAllQuestions;
+public class EffectRepository {
 
-    // Note that in order to unit test the QuestionRepository, you have to remove the Application
+    private EffectDao mEffectDao;
+    private LiveData<List<Effect>> mAllQuestions;
+
+    // Note that in order to unit test the EffectRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
     // See the BasicSample in the android-architecture-components repository at
     // https://github.com/googlesamples
-    QuestionRepository(Application application) {
-        QuestionDatabase db = QuestionDatabase.getDatabase(application);
-        mQuestionDao = db.questionDao();
-        mAllQuestions = mQuestionDao.getAlphabetizedQuestions();
+    EffectRepository(Application application) {
+        database db = database.getDatabase(application);
+        mEffectDao = db.questionDao();
+        mAllQuestions = mEffectDao.getAlphabetizedQuestions();
     }
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    LiveData<List<Question>> getAllQuestions() {
+    LiveData<List<Effect>> getAllQuestions() {
         return mAllQuestions;
     }
 
     // You must call this on a non-UI thread or your app will crash.
     // Like this, Room ensures that you're not doing any long running operations on the main
     // thread, blocking the UI.
-    void insert(Question question) {
-        new QuestionRepository.insertAsyncTask(mQuestionDao).execute(question);
+    void insert(Effect effect) {
+        new EffectRepository.insertAsyncTask(mEffectDao).execute(effect);
     }
 
-    private static class insertAsyncTask extends AsyncTask<Question, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<Effect, Void, Void> {
 
-        private QuestionDao mAsyncTaskDao;
+        private EffectDao mAsyncTaskDao;
 
-        insertAsyncTask(QuestionDao dao) {
+        insertAsyncTask(EffectDao dao) {
             mAsyncTaskDao = dao;
         }
 
         @Override
-        protected Void doInBackground(final Question... params) {
+        protected Void doInBackground(final Effect... params) {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }

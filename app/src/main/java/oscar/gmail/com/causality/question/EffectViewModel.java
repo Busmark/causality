@@ -7,27 +7,27 @@ import android.arch.lifecycle.LiveData;
 import java.util.List;
 
 
-public class QuestionViewModel extends AndroidViewModel  {
+public class EffectViewModel extends AndroidViewModel  {
 
-    private QuestionRepository mRepository;
+    private EffectRepository mRepository;
     // Using LiveData and caching what getAlphabetizedQuestions returns has several benefits:
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    private LiveData<List<Question>> mAllQuestions;
+    private LiveData<List<Effect>> mAllQuestions;
 
-    public QuestionViewModel(Application application) {
+    public EffectViewModel(Application application) {
         super(application);
-        mRepository = new QuestionRepository(application);
+        mRepository = new EffectRepository(application);
         mAllQuestions = mRepository.getAllQuestions();
     }
 
-    public LiveData<List<Question>> getAllQuestions() {
+    public LiveData<List<Effect>> getAllQuestions() {
         return mAllQuestions;
     }
 
-    public void insert(Question question) {
-        mRepository.insert(question);
+    public void insert(Effect effect) {
+        mRepository.insert(effect);
     }
 
 }

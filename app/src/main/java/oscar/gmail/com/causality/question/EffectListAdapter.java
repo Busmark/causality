@@ -13,7 +13,7 @@ import java.util.List;
 import oscar.gmail.com.causality.R;
 
 
-public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapter.QuestionViewHolder> {
+public class EffectListAdapter extends RecyclerView.Adapter<EffectListAdapter.QuestionViewHolder> {
 
     class QuestionViewHolder extends RecyclerView.ViewHolder {
         private final TextView questionItemView;
@@ -25,9 +25,9 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
     }
 
     private final LayoutInflater mInflater;
-    private List<Question> mQuestions = Collections.emptyList();
+    private List<Effect> mEffects = Collections.emptyList();
 
-    public QuestionListAdapter(Context context) {
+    public EffectListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
@@ -39,17 +39,17 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
     @Override
     public void onBindViewHolder(QuestionViewHolder holder, int position) {
-        Question current = mQuestions.get(position);
+        Effect current = mEffects.get(position);
         holder.questionItemView.setText(current.getQuestionText());
     }
 
-    public void setQuestions(List<Question> questions) {
-        mQuestions = questions;
+    public void setQuestions(List<Effect> effects) {
+        mEffects = effects;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mQuestions.size();
+        return mEffects.size();
     }
 }

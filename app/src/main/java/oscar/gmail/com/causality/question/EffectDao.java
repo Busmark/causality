@@ -9,14 +9,14 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 @Dao
-public interface QuestionDao {
+public interface EffectDao {
 
-    @Query("SELECT * from question_table ORDER BY question ASC")
-    LiveData<List<Question>> getAlphabetizedQuestions();
+    @Query("SELECT * from Effect ORDER BY question ASC")
+    LiveData<List<Effect>> getAlphabetizedQuestions();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Question question);
+    void insert(Effect effect);
 
-    @Query("DELETE FROM question_table")
+    @Query("DELETE FROM Effect")
     void deleteAll();
 }

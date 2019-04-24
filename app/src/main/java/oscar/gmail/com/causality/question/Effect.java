@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 
 
 @Entity(tableName = "question_table")
-public class Question {
+public class Effect {
 
 //    @PrimaryKey(autoGenerate = true)
 //    private int questionId = 0;
@@ -46,7 +46,7 @@ public class Question {
     private UUID questionOwner;
 */
 
-    public Question(@NonNull String questionText) {
+    public Effect(@NonNull String questionText) {
         this.questionText = questionText;
     }
 

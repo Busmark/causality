@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.question;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
+
+import oscar.gmail.com.causality.R;
 
 
 public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapter.QuestionViewHolder> {
@@ -25,7 +27,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
     private final LayoutInflater mInflater;
     private List<Question> mQuestions = Collections.emptyList();
 
-    QuestionListAdapter(Context context) {
+    public QuestionListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
@@ -41,7 +43,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         holder.questionItemView.setText(current.getQuestionText());
     }
 
-    void setQuestions(List<Question> questions) {
+    public void setQuestions(List<Question> questions) {
         mQuestions = questions;
         notifyDataSetChanged();
     }

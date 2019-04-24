@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.question;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -9,21 +9,20 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 
-
 @Database(entities = {Question.class}, version = 1, exportSchema = false)
-public abstract class QuestionRoomDatabase extends RoomDatabase {
+public abstract class QuestionDatabase extends RoomDatabase {
 
     public abstract QuestionDao questionDao();
 
     // marking the instance as volatile to ensure atomic access to the variable
-    private static volatile QuestionRoomDatabase INSTANCE;
+    private static volatile QuestionDatabase INSTANCE;
 
-    static QuestionRoomDatabase getDatabase(final Context context) {
+    static QuestionDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (QuestionRoomDatabase.class) {
+            synchronized (QuestionDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            QuestionRoomDatabase.class, "question_database")
+                            QuestionDatabase.class, "question_database")
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this codelab.
                             .fallbackToDestructiveMigration()
@@ -49,7 +48,7 @@ public abstract class QuestionRoomDatabase extends RoomDatabase {
             super.onOpen(db);
             // If you want to keep the data through app restarts,
             // comment out the following line.
-            new QuestionRoomDatabase.PopulateDbAsync(INSTANCE).execute();
+            new QuestionDatabase.PopulateDbAsync(INSTANCE).execute();
         }
     };
 
@@ -61,7 +60,7 @@ public abstract class QuestionRoomDatabase extends RoomDatabase {
 
         private final QuestionDao mDao;
 
-        PopulateDbAsync(QuestionRoomDatabase db) {
+        PopulateDbAsync(QuestionDatabase db) {
             mDao = db.questionDao();
         }
 

@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.question;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
@@ -17,7 +17,7 @@ public class QuestionRepository {
     // See the BasicSample in the android-architecture-components repository at
     // https://github.com/googlesamples
     QuestionRepository(Application application) {
-        QuestionRoomDatabase db = QuestionRoomDatabase.getDatabase(application);
+        QuestionDatabase db = QuestionDatabase.getDatabase(application);
         mQuestionDao = db.questionDao();
         mAllQuestions = mQuestionDao.getAlphabetizedQuestions();
     }

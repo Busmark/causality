@@ -24,7 +24,10 @@ So, we are leaving the template code in. -->
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="oscar.gmail.com.causality.MainActivity">
+    tools:context="oscar.gmail.com.causality.MainActivity"
+    android:background="@android:color/darker_gray"
+    >
+
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -40,14 +43,46 @@ So, we are leaving the template code in. -->
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="267dp"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/button_new_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_create_question"
+            android:textColor="@color/buttonLabel" />
+        <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/button_create_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_connect_questions"
+            android:textColor="@color/buttonLabel" />
+        <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/button_new_inquiry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_create_inquiry"
+            android:textColor="@color/buttonLabel" />
+    </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_black_24dp" />
+
+    <!--<include layout="@layout/content_main" />-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="@dimen/fab_margin"-->
+        <!--android:src="@drawable/ic_add_black_24dp" />-->
 
 </android.support.design.widget.CoordinatorLayout>

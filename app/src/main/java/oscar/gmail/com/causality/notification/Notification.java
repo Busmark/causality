@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,18 +11,20 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 
+import oscar.gmail.com.causality.MainActivity;
+import oscar.gmail.com.causality.R;
 
-class QuestionNotification {
+
+public class Notification {
 
     private final String TAG = "qn";
     int checked = -1;
     String buttonText;
 
-
-    public QuestionNotification() {
+    public Notification() {
     }
 
-    static void createNotification(Context context) {
+    public static void createNotification(Context context) {
         // Create an explicit intent for an Activity in your app
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -44,7 +46,7 @@ class QuestionNotification {
 
     }
     //todo: Registrera det channelId jag använder i new NotificationCompat.Builder(this, "666")
-    static void createNotificationChannel(Context context) {
+    public static void createNotificationChannel(Context context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

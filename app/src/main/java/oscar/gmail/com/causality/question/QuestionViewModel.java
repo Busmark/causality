@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.question;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -22,11 +22,11 @@ public class QuestionViewModel extends AndroidViewModel  {
         mAllQuestions = mRepository.getAllQuestions();
     }
 
-    LiveData<List<Question>> getAllQuestions() {
+    public LiveData<List<Question>> getAllQuestions() {
         return mAllQuestions;
     }
 
-    void insert(Question question) {
+    public void insert(Question question) {
         mRepository.insert(question);
     }
 

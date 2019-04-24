@@ -20,6 +20,19 @@ limitations under the License. -->
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/question_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/q_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp"/>
+
     <EditText
         android:id="@+id/edit_question"
         android:layout_width="match_parent"
@@ -32,12 +45,42 @@ limitations under the License. -->
         android:layout_marginTop="@dimen/big_padding"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/answer_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/a_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"/>
+
+
     <Button
         android:id="@+id/button_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:text="@string/button_save"
+        android:textColor="@color/buttonLabel" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:text="@string/button_cancel"
         android:textColor="@color/buttonLabel" />
 
 </LinearLayout>

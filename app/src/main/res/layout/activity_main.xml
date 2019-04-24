@@ -43,46 +43,35 @@ So, we are leaving the template code in. -->
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="267dp"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+
         <Button
-            android:id="@+id/button_new_question"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/colorPrimary"
-            android:text="@string/button_create_question"
-            android:textColor="@color/buttonLabel" />
-        <Button
-            android:layout_marginTop="10dp"
-            android:id="@+id/button_create_notification"
+            android:id="@+id/button_new_effect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:text="@string/button_connect_questions"
+            android:text="@string/button_new_effect"
+            android:textColor="@color/buttonLabel" />
+        <Button
+            android:id="@+id/button_new_cause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_new_cause"
             android:textColor="@color/buttonLabel" />
         <Button
             android:layout_marginTop="10dp"
-            android:id="@+id/button_new_inquiry"
+            android:id="@+id/button_create_inquiry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:text="@string/button_create_inquiry"
             android:textColor="@color/buttonLabel" />
-    </LinearLayout>
-
-
-    <!--<include layout="@layout/content_main" />-->
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@drawable/ic_add_black_24dp" />-->
-
+        <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/button_investigate_inquiry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_investigate_inquiry"
+            android:textColor="@color/buttonLabel" />
 </android.support.design.widget.CoordinatorLayout>

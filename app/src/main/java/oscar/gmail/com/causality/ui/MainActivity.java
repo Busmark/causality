@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private void displayButtons() {
         Button newEffect = findViewById(R.id.button_new_effect);
         Button newCause = findViewById(R.id.button_new_cause);
-        Button
+        Button createInquiry = findViewById(R.id.button_create_inquiry);
+        Button investigateInquiry = findViewById(R.id.button_investigate_inquiry);
 
 
         newEffect.setOnClickListener(new View.OnClickListener() {

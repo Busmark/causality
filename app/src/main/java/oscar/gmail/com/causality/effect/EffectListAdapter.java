@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.question;
+package oscar.gmail.com.causality.effect;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,15 +12,17 @@ import java.util.List;
 
 import oscar.gmail.com.causality.R;
 
+/*
+Används för att skapa upp flera lika poster i UI´t.
+ */
+public class EffectListAdapter extends RecyclerView.Adapter<EffectListAdapter.EffectViewHolder> {
 
-public class EffectListAdapter extends RecyclerView.Adapter<EffectListAdapter.QuestionViewHolder> {
+    class EffectViewHolder extends RecyclerView.ViewHolder {
+        private final TextView effectItemView;
 
-    class QuestionViewHolder extends RecyclerView.ViewHolder {
-        private final TextView questionItemView;
-
-        private QuestionViewHolder(View itemView) {
+        private EffectViewHolder(View itemView) {
             super(itemView);
-            questionItemView = itemView.findViewById(R.id.textView);
+            effectItemView = itemView.findViewById(R.id.textView);
         }
     }
 
@@ -32,18 +34,18 @@ public class EffectListAdapter extends RecyclerView.Adapter<EffectListAdapter.Qu
     }
 
     @Override
-    public QuestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EffectViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.recyclerview_item, parent, false);
-        return new QuestionViewHolder(itemView);
+        return new EffectViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(QuestionViewHolder holder, int position) {
+    public void onBindViewHolder(EffectViewHolder holder, int position) {
         Effect current = mEffects.get(position);
-        holder.questionItemView.setText(current.getQuestionText());
+        holder.effectItemView.setText(current.getText());
     }
 
-    public void setQuestions(List<Effect> effects) {
+    public void setEffects(List<Effect> effects) {
         mEffects = effects;
         notifyDataSetChanged();
     }

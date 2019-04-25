@@ -27,7 +27,7 @@ limitations under the License. -->
     <string name="button_investigate_inquiry">Investigate Inquiry</string>
 
     <!--New Effect Activity-->
-    <string name="q_instruction">Write a effect</string>
+    <string name="q_instruction">Write a question</string>
     <string name="a_instruction">Pick an interval</string>
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
@@ -38,6 +38,8 @@ limitations under the License. -->
     <!--New Cause Activity-->
 
     <!--Create Inquiry Activity-->
+    <string name="inquiry_instruction_1">Pick a Effect</string>
+    <string name="inquiry_instruction_2">Pick a Cause</string>
 
     <!--Investigate Inquiry Activity-->
 

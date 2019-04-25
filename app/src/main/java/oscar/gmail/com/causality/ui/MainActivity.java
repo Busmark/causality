@@ -16,32 +16,38 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
-import java.util.List;
+import android.widget.EditText;
 
 import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.question.Effect;
-import oscar.gmail.com.causality.question.EffectViewModel;
+import oscar.gmail.com.causality.effect.Effect;
+import oscar.gmail.com.causality.effect.EffectViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String TAG = "mActivity";
+    private final String TAG = "app";
 
-    public static final int NEW_QUESTION_ACTIVITY_REQUEST_CODE = 1;
+    public static final int NEW_EFFECT_ACTIVITY_REQUEST_CODE = 1;
+    public static final int CREATE_INQUIRY_ACTIVITY_REQUEST_CODE = 2;
 
     public EffectViewModel mEffectViewModel;
+
+
+    public static final String EXTRA_REPLY = "Effect";
+    public static final String EXTRA_INTERVAL = "Interval";
+
+    private EditText mEditEffectView;
+    private String chosenInterval;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,65 +57,111 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Get a new or existing ViewModel from the ViewModelProvider.
-        mEffectViewModel = ViewModelProviders.of(this).get(EffectViewModel.class);
 
 
         //displayAllQuestions();
-        displayButtons();
+//        displayButtons();
         //createNotification();
         //getAlertDialog();
-
-        mEffectViewModel.getAllQuestions().observe(this, new Observer<List<Effect>>() {
-            @Override
-            public void onChanged(@Nullable final List<Effect> effects) {
-                //String questionText = effects.iterator().next().getQuestionText();
-                // Update the cached copy of the effects in the adapter.
-
-                Log.i(TAG, "List size is: " + effects.size());
-
-            }
-        });
+        mEffectViewModel = ViewModelProviders.of(this).get(EffectViewModel.class);
 
     }
 
+    public void newEffectBtnClicked(View v) {
+        setContentView(R.layout.activity_new_effect);
+    }
+
+    public void cancelBtnClicked(View v) {
+        setContentView(R.layout.activity_main);
+    }
+    public void saveEffectBtnClicked(View v) {
+        mEditEffectView = findViewById(R.id.edit_question);
+
+        if (TextUtils.isEmpty(mEditEffectView.getText())) {
+            setResult(RESULT_CANCELED);
+        } else {
+            String text = mEditEffectView.getText().toString();
+            Effect effect = new Effect(text);
+            Log.i(TAG, effect.getText());
+//            mEffectViewModel.insert(effect);
+            setContentView(R.layout.activity_main);
+        }
+    }
+
+
+
+
+//    public void newCauseBtnClicked(View v) {
+//        setContentView(R.layout.activity_new_effect);
+//    }
+
+//    public void createInquiryBtnClicked(View v) {
+//        setContentView(R.layout.activity_create_inquiry);
+//    }
+//
+//    public void investigatInquiryBtnClicked(View v) {
+//        setContentView(R.layout.)
+//    }
+
+
+
+
+
+    //todo: kan jag lägga clicklyssnarna i xml´en istället alt i EffectViewModel?
     private void displayButtons() {
         Button newEffect = findViewById(R.id.button_new_effect);
-        Button newCause = findViewById(R.id.button_new_cause);
+//        Button newCause = findViewById(R.id.button_new_cause);
         Button createInquiry = findViewById(R.id.button_create_inquiry);
-        Button investigateInquiry = findViewById(R.id.button_investigate_inquiry);
-
+//        Button investigateInquiry = findViewById(R.id.button_investigate_inquiry);
 
         newEffect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NewEffectActivity.class);
-                startActivityForResult(intent, NEW_QUESTION_ACTIVITY_REQUEST_CODE);
+                setContentView(R.layout.activity_new_effect);
+                mEditEffectView = findViewById(R.id.edit_question);
+//                Intent intent = new Intent(MainActivity.this, NewEffectActivity.class);
+//                startActivityForResult(intent, NEW_EFFECT_ACTIVITY_REQUEST_CODE);
             }
         });
+        createInquiry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, CreateInquiryActivity.class);
+//                startActivityForResult(intent, CREATE_INQUIRY_ACTIVITY_REQUEST_CODE);
+            }
+        });
+
     }
 
 
-
-
-
-
-
-
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_QUESTION_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Effect effect = new Effect(data.getStringExtra(NewEffectActivity.EXTRA_REPLY));
-            mEffectViewModel.insert(effect);
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
+    //    /**
+//     * Kallas på när man går tillbaka till MainActivity
+//     * @param requestCode
+//     * @param resultCode
+//     * @param data
+//     */
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        Log.i(TAG, "onActivityResult.requestCode: " + requestCode);
+//        Log.i(TAG, "onActivityResult.resultCode: " + resultCode);
+//        Log.i(TAG, "onActivityResult.data: " + data);
+//
+//
+//        if (requestCode == CREATE_INQUIRY_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+//            Log.i(TAG, "Return from create Inquiry");
+//        }
+//        //todo: hantera if-else-satsen här
+//        if (requestCode == NEW_EFFECT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+//            Effect effect = new Effect(data.getStringExtra(NewEffectActivity.EXTRA_REPLY));
+//            mEffectViewModel.insert(effect);
+//        } else {
+//            Toast.makeText(
+//                    getApplicationContext(),
+//                    R.string.empty_not_saved,
+//                    Toast.LENGTH_LONG).show();
+//        }
+//    }
 
 //    public void displayAllQuestions() {
 //
@@ -121,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 //        mEffectViewModel.getAllQuestions().observe(this, new Observer<List<Effect>>() {
 //            @Override
 //            public void onChanged(@Nullable final List<Effect> effects) {
-//                String questionText = effects.iterator().next().getQuestionText();
+//                String questionText = effects.iterator().next().getText();
 //                // Update the cached copy of the effects in the adapter.
 //                adapter.setQuestions(effects);
 //            }

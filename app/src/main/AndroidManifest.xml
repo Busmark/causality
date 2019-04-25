@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="oscar.gmail.com.causality.ui.NewEffectActivity"></activity>
+        <!--<activity android:name=".ui.NewEffectActivity"></activity>-->
+        <!--<activity android:name=".ui.CreateInquiryActivity"></activity>-->
     </application>
 
 </manifest>

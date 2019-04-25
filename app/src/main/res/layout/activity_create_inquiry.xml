@@ -21,36 +21,11 @@ limitations under the License. -->
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/question_instruction"
+        android:id="@+id/inquiry_instruction_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:text="@string/q_instruction"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@color/buttonLabel"
-        android:padding="@dimen/small_padding"
-        android:layout_marginBottom="@dimen/big_padding"
-        android:layout_marginTop="@dimen/big_padding"
-        android:textSize="18sp"/>
-
-    <EditText
-        android:id="@+id/edit_question"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
-        android:hint="@string/hint_question"
-        android:inputType="textAutoComplete"
-        android:padding="@dimen/small_padding"
-        android:layout_marginBottom="@dimen/big_padding"
-        android:layout_marginTop="@dimen/big_padding"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/answer_instruction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="@string/a_instruction"
+        android:text="@string/inquiry_instruction_1"
         android:fontFamily="sans-serif-light"
         android:textColor="@color/buttonLabel"
         android:padding="@dimen/small_padding"
@@ -59,7 +34,27 @@ limitations under the License. -->
         android:textSize="18sp"/>
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/all_effects_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"/>
+
+    <TextView
+        android:id="@+id/inquiry_instruction_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/inquiry_instruction_2"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp"/>
+
+    <Spinner
+        android:id="@+id/all_causes_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/btn_dropdown"
@@ -67,22 +62,20 @@ limitations under the License. -->
 
 
     <Button
-        android:id="@+id/button_save"
+        android:id="@+id/button_save_inquiry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:text="@string/button_save"
-        android:textColor="@color/buttonLabel"
-        android:onClick="saveEffectBtnClicked"/>
+        android:textColor="@color/buttonLabel" />
 
     <Button
-        android:id="@+id/button_cancel"
+        android:id="@+id/button_cancel_inquiry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
         android:text="@string/button_cancel"
-        android:textColor="@color/buttonLabel"
-        android:onClick="cancelBtnClicked"/>
+        android:textColor="@color/buttonLabel" />
 
 </LinearLayout>

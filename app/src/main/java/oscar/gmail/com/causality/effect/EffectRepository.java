@@ -3,7 +3,6 @@ package oscar.gmail.com.causality.effect;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class EffectRepository {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    LiveData<List<Effect>> getAllWords() {
+    LiveData<List<Effect>> getAllEffects() {
         return mAllEffects;
     }
 
@@ -52,11 +51,6 @@ public class EffectRepository {
 
         @Override
         protected Void doInBackground(final Effect... params) {
-
-            Effect[] temp = (Effect[]) params;
-            Log.i(TAG, "insertAsyncTask : params[0] = " + temp[0].getText());
-
-
             mAsyncEffectDao.insert(params[0]);
             return null;
         }

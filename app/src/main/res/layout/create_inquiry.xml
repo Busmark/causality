@@ -76,6 +76,7 @@ limitations under the License. -->
         android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
         android:text="@string/button_cancel"
-        android:textColor="@color/buttonLabel" />
+        android:textColor="@color/buttonLabel"
+        android:onClick="cancelBtnClicked"/>
 
 </LinearLayout>

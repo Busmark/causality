@@ -21,10 +21,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
+
+import java.util.List;
 
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.effect.Effect;
@@ -38,15 +41,17 @@ public class MainActivity extends AppCompatActivity {
     public static final int NEW_EFFECT_ACTIVITY_REQUEST_CODE = 1;
     public static final int CREATE_INQUIRY_ACTIVITY_REQUEST_CODE = 2;
 
+    //New Effect
     public EffectViewModel mEffectViewModel;
-
-
     public static final String EXTRA_REPLY = "Effect";
     public static final String EXTRA_INTERVAL = "Interval";
-
     private EditText mEditEffectView;
-    private String chosenInterval;
+    private String chosenEffectInterval = "";
 
+    //Create Inquiry
+    private String chosenInquiryEffect = "";
+
+    private List<Effect> upToDateListofEffects;
 
 
     @Override
@@ -57,47 +62,94 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
-        //displayAllQuestions();
-//        displayButtons();
-        //createNotification();
-        //getAlertDialog();
         mEffectViewModel = ViewModelProviders.of(this).get(EffectViewModel.class);
+        mEffectViewModel.getAllEffects().observe(this, words -> {
+            // Update the cached copy of the words in the adapter.
+            upToDateListofEffects = words;
+        });
 
     }
 
     public void newEffectBtnClicked(View v) {
-        setContentView(R.layout.activity_new_effect);
+        setContentView(R.layout.new_effect);
+        populateEffectSpinner();
+    }
+
+    public void createInquiryBtnClicked(View v) {
+    setContentView(R.layout.create_inquiry);
+    populateInquirySpinners();
+    }
+
+    private void populateInquirySpinners() {
+        //Todo: hämta en spinner via factory i stället?
+        Spinner allEffects = findViewById(R.id.all_effects_spinner);
+
+
+        ArrayAdapter<CharSequence> effectsForSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        upToDateListofEffects.forEach(effect -> {
+            effectsForSpinner.add(effect.getText());
+        });
+
+        effectsForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        allEffects.setAdapter(effectsForSpinner);
+
+        allEffects.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                chosenInquiryEffect = (String) parent.getItemAtPosition(position);
+
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        //todo: spinner för Cause
     }
 
     public void cancelBtnClicked(View v) {
         setContentView(R.layout.activity_main);
     }
+
     public void saveEffectBtnClicked(View v) {
         mEditEffectView = findViewById(R.id.edit_question);
-
         if (TextUtils.isEmpty(mEditEffectView.getText())) {
             setResult(RESULT_CANCELED);
         } else {
             String text = mEditEffectView.getText().toString();
             Effect effect = new Effect(text);
-            Log.i(TAG, effect.getText());
-//            mEffectViewModel.insert(effect);
+            mEffectViewModel.insert(effect);
             setContentView(R.layout.activity_main);
         }
+    }
+
+    private void populateEffectSpinner() {
+        Spinner spinner = findViewById(R.id.spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.answer_interval_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                chosenEffectInterval = (String) parent.getItemAtPosition(position);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
 
 
 
+
+
 //    public void newCauseBtnClicked(View v) {
-//        setContentView(R.layout.activity_new_effect);
+//        setContentView(R.layout.new_effect);
 //    }
 
-//    public void createInquiryBtnClicked(View v) {
-//        setContentView(R.layout.activity_create_inquiry);
-//    }
+
 //
 //    public void investigatInquiryBtnClicked(View v) {
 //        setContentView(R.layout.)
@@ -106,32 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-    //todo: kan jag lägga clicklyssnarna i xml´en istället alt i EffectViewModel?
-    private void displayButtons() {
-        Button newEffect = findViewById(R.id.button_new_effect);
-//        Button newCause = findViewById(R.id.button_new_cause);
-        Button createInquiry = findViewById(R.id.button_create_inquiry);
-//        Button investigateInquiry = findViewById(R.id.button_investigate_inquiry);
-
-        newEffect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setContentView(R.layout.activity_new_effect);
-                mEditEffectView = findViewById(R.id.edit_question);
-//                Intent intent = new Intent(MainActivity.this, NewEffectActivity.class);
-//                startActivityForResult(intent, NEW_EFFECT_ACTIVITY_REQUEST_CODE);
-            }
-        });
-        createInquiry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, CreateInquiryActivity.class);
-//                startActivityForResult(intent, CREATE_INQUIRY_ACTIVITY_REQUEST_CODE);
-            }
-        });
-
-    }
 
 
     //    /**

@@ -20,7 +20,7 @@ public class EffectViewModel extends AndroidViewModel  {
     public EffectViewModel(Application application) {
         super(application);
         mRepository = new EffectRepository(application);
-        mAllEffects = mRepository.getAllWords();
+        mAllEffects = mRepository.getAllEffects();
     }
 
     public LiveData<List<Effect>> getAllEffects() {

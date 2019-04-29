@@ -20,9 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--<activity android:name=".ui.NewEffectActivity"></activity>-->
-        <!--<activity android:name=".ui.CreateInquiryActivity"></activity>-->
     </application>
 
 </manifest>

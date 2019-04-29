@@ -21,6 +21,9 @@ public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
     public static AppDatabase getDatabase(final Context context) {
+        final String TAG = "app";
+
+
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
@@ -59,6 +62,7 @@ public abstract class AppDatabase extends RoomDatabase {
      * If you want to start with more questions, just add them.
      */
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+        private final String TAG = "app";
 
         private final EffectDao mDao;
 

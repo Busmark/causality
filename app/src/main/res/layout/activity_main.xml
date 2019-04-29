@@ -72,7 +72,8 @@ So, we are leaving the template code in. -->
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
                 android:text="@string/button_create_inquiry"
-                android:textColor="@color/buttonLabel" />
+                android:textColor="@color/buttonLabel"
+                android:onClick="createInquiryBtnClicked"/>
 
             <Button
                 android:id="@+id/button_investigate_inquiry"

@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name="oscar.gmail.com.causality.NotificationReceiver"
+            android:name="oscar.gmail.com.causality.services.NotificationReceiver"
             android:exported="false"/>
         <activity
             android:name="oscar.gmail.com.causality.ui.MainActivity"

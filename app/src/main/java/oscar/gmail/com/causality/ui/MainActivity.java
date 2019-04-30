@@ -16,10 +16,7 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
-import android.app.NotificationManager;
-import android.app.RemoteInput;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,19 +30,16 @@ import android.widget.Spinner;
 
 import java.util.List;
 
-import oscar.gmail.com.causality.NotificationNotifier;
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.question.Question;
 import oscar.gmail.com.causality.question.QuestionType;
 import oscar.gmail.com.causality.question.QuestionViewModel;
+import oscar.gmail.com.causality.services.NotificationNotifier;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "app";
-
-    public static final int NEW_QUESTION_ACTIVITY_REQUEST_CODE = 1;
-    public static final int CREATE_INQUIRY_ACTIVITY_REQUEST_CODE = 2;
 
     //New Question
     public QuestionViewModel mQuestionViewModel;
@@ -61,18 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Question> upToDateListofQuestions;
 
     //Create Notification
-    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
-    NotificationManager notificationManager;
     NotificationNotifier notifier;
-    private static String KEY_TEXT_REPLY = "key_text_reply";
-
-
-    /*
-        test med att starta upp en recieverservice från mainactivity när jag beställer en Notification.
-        Receiverservicen bör då ha möjlighet att ta emot datan och spara ner den till db´n.
-        ...även om MainActivity är avstängd.
-     */
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,34 +70,13 @@ public class MainActivity extends AppCompatActivity {
         //caches all the questions
         mQuestionViewModel.getAllQuestions()
                             .observe(this, questions -> upToDateListofQuestions = questions);
-        handleTutorialIntent();
     }
 
-    //todo: ska detta göras i annan tråd?
+    //todo: ska detta göras i annan tråd eller rent av från AnswerViewModel??
     public void sendTutorialNotification(View view) {
         notifier = new NotificationNotifier(this);
         notifier.sendTutorialNotification(view);
-
     }
-    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
-    private void handleTutorialIntent() {
-        Intent intent = this.getIntent();
-        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
-        if (remoteInput != null) {
-            String inputString = remoteInput.getCharSequence(
-                    KEY_TEXT_REPLY).toString();
-            Log.i(TAG, "Text in notifierActivity = " + inputString);
-        }
-    }
-
-
-
-
-
-
-
-
-
 
     public void newQuestionBtnClicked(View v) {
         setContentView(R.layout.new_question);

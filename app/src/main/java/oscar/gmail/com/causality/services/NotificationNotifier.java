@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality;
+package oscar.gmail.com.causality.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
+import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.ui.MainActivity;
 
 public class NotificationNotifier {
@@ -68,10 +69,20 @@ public class NotificationNotifier {
                         .setLabel(replyLabel)
                         .build();
 
-        Intent resultIntent = new Intent(mainActivityContext, MainActivity.class);
+//        Intent resultIntent = new Intent(mainActivityContext, MainActivity.class);
+        Intent resultIntent = new Intent(mainActivityContext, NotificationReceiver.class);
+
+        /*
+                PendingIntent readPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                conversation.getConversationId(),
+                getMessageReadIntent(conversation.getConversationId()),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+         */
+
 
         PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
+                PendingIntent.getService(
                         mainActivityContext,
                         0,
                         resultIntent,

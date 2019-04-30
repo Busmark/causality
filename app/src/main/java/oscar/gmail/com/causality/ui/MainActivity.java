@@ -16,42 +16,67 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.RemoteInput;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.List;
 
 import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.effect.Effect;
-import oscar.gmail.com.causality.effect.EffectViewModel;
+import oscar.gmail.com.causality.question.Question;
+import oscar.gmail.com.causality.question.QuestionType;
+import oscar.gmail.com.causality.question.QuestionViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "app";
 
-    public static final int NEW_EFFECT_ACTIVITY_REQUEST_CODE = 1;
+    public static final int NEW_QUESTION_ACTIVITY_REQUEST_CODE = 1;
     public static final int CREATE_INQUIRY_ACTIVITY_REQUEST_CODE = 2;
 
-    //New Effect
-    public EffectViewModel mEffectViewModel;
-    public static final String EXTRA_REPLY = "Effect";
+    //New Question
+    public QuestionViewModel mQuestionViewModel;
+    public static final String EXTRA_REPLY = "Question";
     public static final String EXTRA_INTERVAL = "Interval";
-    private EditText mEditEffectView;
-    private String chosenEffectInterval = "";
+    private EditText createQuestionEditText;
+    private String chosenQuestionInterval = "";
+    private String[] notificationDays= new String[6];
+    private String notificationTime;
 
     //Create Inquiry
-    private String chosenInquiryEffect = "";
+    private String chosenQuestionEffect = "";
+    private List<Question> upToDateListofQuestions;
 
-    private List<Effect> upToDateListofEffects;
+    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
+    NotificationManager notificationManager;
+    private String channelID = "oscar.gmail.com.causality";
+    private static int notificationId = 101;
+    private static String KEY_TEXT_REPLY = "key_text_reply";
+
+    /*
+        test med att starta upp en recieverservice från mainactivity när jag beställer en Notification.
+        Receiverservicen bör då ha möjlighet att ta emot datan och spara ner den till db´n.
+        ...även om MainActivity är avstängd.
+     */
 
 
     @Override
@@ -62,172 +87,190 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mEffectViewModel = ViewModelProviders.of(this).get(EffectViewModel.class);
-        mEffectViewModel.getAllEffects().observe(this, words -> {
-            // Update the cached copy of the words in the adapter.
-            upToDateListofEffects = words;
-        });
+        mQuestionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
 
+        //caches all the questions
+        mQuestionViewModel.getAllQuestions()
+                            .observe(this, questions -> upToDateListofQuestions = questions);
+
+
+
+        //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
+        notificationManager =
+                (NotificationManager)
+                        getSystemService(Context.NOTIFICATION_SERVICE);
+        createNotificationChannel(channelID,
+                "DirectReply News", "Example News Channel");
+        handleIntent();
     }
 
-    public void newEffectBtnClicked(View v) {
-        setContentView(R.layout.new_effect);
-        populateEffectSpinner();
+    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
+    private void handleIntent() {
+        Intent intent = this.getIntent();
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            String inputString = remoteInput.getCharSequence(
+                    KEY_TEXT_REPLY).toString();
+            Log.i(TAG, "Text in remoteInput = " + inputString);
+        }
+    }
+
+    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
+    protected void createNotificationChannel(String id, String name, String description) {
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel =
+                new NotificationChannel(id, name, importance);
+        channel.setDescription(description);
+        channel.enableLights(true);
+        channel.setLightColor(Color.RED);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(new long[]{100, 200, 300, 400,
+                500, 400, 300, 200, 400});
+        notificationManager.createNotificationChannel(channel);
+    }
+
+    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
+    public void sendNotification(View view) {
+        String replyLabel = "Enter your reply here";
+        RemoteInput remoteInput =
+                new RemoteInput.Builder(KEY_TEXT_REPLY)
+                        .setLabel(replyLabel)
+                        .build();
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        final Icon icon =
+                Icon.createWithResource(MainActivity.this,
+                        android.R.drawable.ic_dialog_info);
+        Notification.Action replyAction =
+                new Notification.Action.Builder(
+                        icon,
+                        "Reply", resultPendingIntent)
+                        .addRemoteInput(remoteInput)
+                        .build();
+
+        Notification newMessageNotification =
+                new Notification.Builder(this, channelID)
+                        .setColor(ContextCompat.getColor(this,
+                                R.color.colorPrimary))
+                        .setSmallIcon(
+                                android.R.drawable.ic_dialog_info)
+                        .setContentTitle("My Notification")
+                        .setContentText("This is a test message")
+                        .addAction(replyAction).build();
+        NotificationManager notificationManager =
+                (NotificationManager)
+                        getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(notificationId,
+                newMessageNotification);
+    }
+
+
+
+
+
+
+    public void newQuestionBtnClicked(View v) {
+        setContentView(R.layout.new_question);
     }
 
     public void createInquiryBtnClicked(View v) {
-    setContentView(R.layout.create_inquiry);
-    populateInquirySpinners();
+        setContentView(R.layout.create_inquiry);
+        populateCreateInquirySpinners();
     }
 
-    private void populateInquirySpinners() {
-        //Todo: hämta en spinner via factory i stället?
-        Spinner allEffects = findViewById(R.id.all_effects_spinner);
+    private void populateCreateInquirySpinners() {
+        //Todo: hämta en spinner via xml eller factory i stället?
+        //se hur jag gjorde på saveQuestionButton...
+        Spinner allEffectQuestions = findViewById(R.id.all_effects_spinner);
+        Spinner allCauseQuestions = findViewById(R.id.all_causes_spinner);
 
+        ArrayAdapter<CharSequence> effectQuestionsForSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> causeQuestionsForSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
 
-        ArrayAdapter<CharSequence> effectsForSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        upToDateListofEffects.forEach(effect -> {
-            effectsForSpinner.add(effect.getText());
-        });
+        upToDateListofQuestions.forEach(question -> {
+            if (question.getQuestionType().matches(QuestionType.EFFECT.toString()))
+                effectQuestionsForSpinner.add(question.getText());
+            if (question.getQuestionType().matches(QuestionType.CAUSE.toString()))
+                causeQuestionsForSpinner.add(question.getText());
+                }
+        );
+        effectQuestionsForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        causeQuestionsForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        effectsForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        allEffects.setAdapter(effectsForSpinner);
+        allEffectQuestions.setAdapter(effectQuestionsForSpinner);
+        allCauseQuestions.setAdapter(causeQuestionsForSpinner);
+    }
 
-        allEffects.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                chosenInquiryEffect = (String) parent.getItemAtPosition(position);
+    public void saveInquiryBtnClicked(View v) {
 
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        String effect = ((Spinner)findViewById(R.id.all_effects_spinner)).getSelectedItem().toString();
+//        String cause = ((Spinner)findViewById(R.id.all_causes_spinner)).getSelectedItem().toString();
 
-        //todo: spinner för Cause
+        setContentView(R.layout.activity_main);
     }
 
     public void cancelBtnClicked(View v) {
         setContentView(R.layout.activity_main);
     }
 
-    public void saveEffectBtnClicked(View v) {
-        mEditEffectView = findViewById(R.id.edit_question);
-        if (TextUtils.isEmpty(mEditEffectView.getText())) {
+
+
+    public void saveQuestionBtnClicked(View v) {
+
+        createQuestionEditText = findViewById(R.id.new_question_text);
+        String spinnerText = ((Spinner)findViewById(R.id.question_type_spinner)).getSelectedItem().toString();
+
+        if (TextUtils.isEmpty(createQuestionEditText.getText())) {
             setResult(RESULT_CANCELED);
         } else {
-            String text = mEditEffectView.getText().toString();
-            Effect effect = new Effect(text);
-            mEffectViewModel.insert(effect);
+            String text = createQuestionEditText.getText().toString();
+            Question question = new Question(true, spinnerText,  text);
+            mQuestionViewModel.insert(question);
             setContentView(R.layout.activity_main);
         }
     }
 
-    private void populateEffectSpinner() {
-        Spinner spinner = findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.answer_interval_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+    public void onWeekdayCheckboxClicked(View view) {
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                chosenEffectInterval = (String) parent.getItemAtPosition(position);
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        boolean checked = ((CheckBox) view).isChecked();
+
+        switch (view.getId()) {
+            case R.id.monday:
+                Log.i(TAG, "Monday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+            case R.id.tuesday:
+                Log.i(TAG, "tuesday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+            case R.id.wednesday:
+                Log.i(TAG, "wednesday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+            case R.id.thursday:
+                Log.i(TAG, "thursday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+            case R.id.friday:
+                Log.i(TAG, "friday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+            case R.id.saturday:
+                Log.i(TAG, "saturday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+            case R.id.sunday:
+                Log.i(TAG, "sunday clicked");
+                Log.i(TAG, "" + view.getId());
+                break;
+        }
     }
-
-
-
-
-
-
-//    public void newCauseBtnClicked(View v) {
-//        setContentView(R.layout.new_effect);
-//    }
-
-
-//
-//    public void investigatInquiryBtnClicked(View v) {
-//        setContentView(R.layout.)
-//    }
-
-
-
-
-
-
-    //    /**
-//     * Kallas på när man går tillbaka till MainActivity
-//     * @param requestCode
-//     * @param resultCode
-//     * @param data
-//     */
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        Log.i(TAG, "onActivityResult.requestCode: " + requestCode);
-//        Log.i(TAG, "onActivityResult.resultCode: " + resultCode);
-//        Log.i(TAG, "onActivityResult.data: " + data);
-//
-//
-//        if (requestCode == CREATE_INQUIRY_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-//            Log.i(TAG, "Return from create Inquiry");
-//        }
-//        //todo: hantera if-else-satsen här
-//        if (requestCode == NEW_EFFECT_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-//            Effect effect = new Effect(data.getStringExtra(NewEffectActivity.EXTRA_REPLY));
-//            mEffectViewModel.insert(effect);
-//        } else {
-//            Toast.makeText(
-//                    getApplicationContext(),
-//                    R.string.empty_not_saved,
-//                    Toast.LENGTH_LONG).show();
-//        }
-//    }
-
-//    public void displayAllQuestions() {
-//
-//        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-//        final EffectListAdapter adapter = new EffectListAdapter(this);
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//
-//        mEffectViewModel.getAllQuestions().observe(this, new Observer<List<Effect>>() {
-//            @Override
-//            public void onChanged(@Nullable final List<Effect> effects) {
-//                String questionText = effects.iterator().next().getText();
-//                // Update the cached copy of the effects in the adapter.
-//                adapter.setQuestions(effects);
-//            }
-//        });
-//    }
-//
-//    public void createNotification() {
-//
-////      Skapa upp en Notification som startar en Activity
-//        //todo: kan aktiviteten jag startar upp vara samma som används i NewEffectActivity, fast utan
-//        //att köra aktiviteten i foreground?
-//        Notification.createNotificationChannel(this);
-//        Notification.createNotification(this);
-//    }
-//
-//    public void getAlertDialog() {
-//
-////      skapar upp en AlertDialog som sparar ner svaret till databasen
-//        final Notification qn = new Notification();
-//        AlertDialog ad = qn.getAlertDialogWithMultipleList(this);
-//        ad.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialog) {
-//                Effect effect = new Effect("" + qn.getButtonText());
-//                mEffectViewModel.insert(effect);
-//            }
-//        });
-//        ad.show();
-//    }
-
 }

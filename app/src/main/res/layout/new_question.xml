@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Copyright 2017 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/question_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/q_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:textSize="18sp"/>
+
+    <EditText
+        android:id="@+id/new_question_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:hint="@string/hint_question"
+        android:inputType="textAutoComplete"
+        android:padding="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/question_type_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/q_type_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:textSize="18sp"/>
+
+    <Spinner
+        android:id="@+id/question_type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:entries="@array/question_types"/>
+
+    <TextView
+        android:id="@+id/set_day_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/set_day_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp"/>
+
+    <CheckBox
+        android:id="@+id/monday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/tuesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tuesday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/wednesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wednesday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/thursday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thursday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/friday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Friday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/saturday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Saturday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+    <CheckBox
+        android:id="@+id/sunday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sunday"
+        android:onClick="onWeekdayCheckboxClicked"/>
+
+
+    <TextView
+        android:id="@+id/set_time_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/set_time_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp"/>
+
+    <!--Inte optimalt att ha layout i layout?-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <Spinner
+        android:id="@+id/hour_spinner"
+        android:layout_width="50pt"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:entries="@array/hours"
+        android:spinnerMode="dropdown" />
+
+    <Spinner
+        android:id="@+id/minute_spinner"
+        android:layout_width="50pt"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:entries="@array/minutes"
+        android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/answer_instruction"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:text="@string/a_instruction"-->
+        <!--android:fontFamily="sans-serif-light"-->
+        <!--android:textColor="@color/buttonLabel"-->
+        <!--android:padding="@dimen/small_padding"-->
+        <!--android:layout_marginBottom="@dimen/big_padding"-->
+        <!--android:layout_marginTop="@dimen/big_padding"-->
+        <!--android:textSize="18sp"/>-->
+
+    <!--<Spinner-->
+        <!--android:id="@+id/interval_spinner"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:drawable/btn_dropdown"-->
+        <!--android:spinnerMode="dropdown"-->
+        <!--android:entries="@array/answer_interval_array" />-->
+
+
+
+
+
+
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+
+        android:background="@color/colorPrimary"
+        android:onClick="saveQuestionBtnClicked"
+        android:text="@string/button_save"
+        android:textColor="@color/buttonLabel" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:onClick="cancelBtnClicked"
+        android:text="@string/button_cancel"
+        android:textColor="@color/buttonLabel" />
+
+</LinearLayout>
+    </ScrollView>

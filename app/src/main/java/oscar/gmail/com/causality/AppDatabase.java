@@ -8,14 +8,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import oscar.gmail.com.causality.effect.Effect;
-import oscar.gmail.com.causality.effect.EffectDao;
+import oscar.gmail.com.causality.question.Question;
+import oscar.gmail.com.causality.question.QuestionDao;
 
 
-@Database(entities = {Effect.class}, version = 1, exportSchema = false)
+@Database(entities = {Question.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract EffectDao effectDao();
+    public abstract QuestionDao questionDao();
 
     // marking the instance as volatile to ensure atomic access to the variable
     private static volatile AppDatabase INSTANCE;
@@ -64,10 +64,10 @@ public abstract class AppDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
         private final String TAG = "app";
 
-        private final EffectDao mDao;
+        private final QuestionDao mDao;
 
         PopulateDbAsync(AppDatabase db) {
-            mDao = db.effectDao();
+            mDao = db.questionDao();
         }
 
         @Override
@@ -76,10 +76,10 @@ public abstract class AppDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
 
-            Effect effect = new Effect("När gick jag till sängs igår?");
-            mDao.insert(effect);
-            effect = new Effect("Kände jag mig utvilad?");
-            mDao.insert(effect);
+            Question question = new Question(true, "CAUSE", "När gick jag till sängs igår?");
+            mDao.insert(question);
+            question = new Question(true, "EFFECT", "Kände jag mig utvilad?");
+            mDao.insert(question);
             return null;
         }
     }

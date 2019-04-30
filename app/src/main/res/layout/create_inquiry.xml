@@ -61,13 +61,17 @@ limitations under the License. -->
         android:spinnerMode="dropdown"/>
 
 
+
+
+
     <Button
         android:id="@+id/button_save_inquiry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:text="@string/button_save"
-        android:textColor="@color/buttonLabel" />
+        android:textColor="@color/buttonLabel"
+        android:onClick="saveInquiryBtnClicked" />
 
     <Button
         android:id="@+id/button_cancel_inquiry"

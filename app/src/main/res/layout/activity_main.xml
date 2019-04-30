@@ -25,16 +25,14 @@ So, we are leaving the template code in. -->
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="oscar.gmail.com.causality.ui.MainActivity"
-    android:background="@android:color/darker_gray"
-    >
+    android:background="@android:color/darker_gray">
 
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="@android:color/darker_gray"
-        >
+        android:background="@android:color/darker_gray">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -49,22 +47,15 @@ So, we are leaving the template code in. -->
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/button_new_effect"
+                android:id="@+id/button_new_question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
-                android:text="@string/button_new_effect"
+                android:text="@string/button_new_question"
                 android:textColor="@color/buttonLabel"
-                android:onClick="newEffectBtnClicked"/>
-            <Button
-                android:id="@+id/button_new_cause"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/button_new_cause"
-                android:textColor="@color/buttonLabel" />
+                android:onClick="newQuestionBtnClicked"/>
+
             <Button
                 android:id="@+id/button_create_inquiry"
                 android:layout_width="match_parent"
@@ -83,9 +74,22 @@ So, we are leaving the template code in. -->
                 android:background="@color/colorPrimary"
                 android:text="@string/button_investigate_inquiry"
                 android:textColor="@color/buttonLabel" />
+
+            <Button
+                android:id="@+id/orderAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimary"
+                android:text="Order Notification"
+                android:textColor="@color/buttonLabel"
+                android:onClick="sendNotification"/>
+
+
+
+
+
         </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>
-
-
 </android.support.design.widget.CoordinatorLayout>

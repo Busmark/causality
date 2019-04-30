@@ -83,7 +83,7 @@ So, we are leaving the template code in. -->
                 android:background="@color/colorPrimary"
                 android:text="Order Notification"
                 android:textColor="@color/buttonLabel"
-                android:onClick="sendNotification"/>
+                android:onClick="sendTutorialNotification"/>
 
 
 

@@ -16,18 +16,11 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.RemoteInput;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -40,6 +33,7 @@ import android.widget.Spinner;
 
 import java.util.List;
 
+import oscar.gmail.com.causality.NotificationNotifier;
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.question.Question;
 import oscar.gmail.com.causality.question.QuestionType;
@@ -66,11 +60,12 @@ public class MainActivity extends AppCompatActivity {
     private String chosenQuestionEffect = "";
     private List<Question> upToDateListofQuestions;
 
+    //Create Notification
     //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
     NotificationManager notificationManager;
-    private String channelID = "oscar.gmail.com.causality";
-    private static int notificationId = 101;
+    NotificationNotifier notifier;
     private static String KEY_TEXT_REPLY = "key_text_reply";
+
 
     /*
         test med att starta upp en recieverservice från mainactivity när jag beställer en Notification.
@@ -92,85 +87,29 @@ public class MainActivity extends AppCompatActivity {
         //caches all the questions
         mQuestionViewModel.getAllQuestions()
                             .observe(this, questions -> upToDateListofQuestions = questions);
-
-
-
-        //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
-        notificationManager =
-                (NotificationManager)
-                        getSystemService(Context.NOTIFICATION_SERVICE);
-        createNotificationChannel(channelID,
-                "DirectReply News", "Example News Channel");
-        handleIntent();
+        handleTutorialIntent();
     }
 
+    //todo: ska detta göras i annan tråd?
+    public void sendTutorialNotification(View view) {
+        notifier = new NotificationNotifier(this);
+        notifier.sendTutorialNotification(view);
+
+    }
     //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
-    private void handleIntent() {
+    private void handleTutorialIntent() {
         Intent intent = this.getIntent();
         Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
         if (remoteInput != null) {
             String inputString = remoteInput.getCharSequence(
                     KEY_TEXT_REPLY).toString();
-            Log.i(TAG, "Text in remoteInput = " + inputString);
+            Log.i(TAG, "Text in notifierActivity = " + inputString);
         }
     }
 
-    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
-    protected void createNotificationChannel(String id, String name, String description) {
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel channel =
-                new NotificationChannel(id, name, importance);
-        channel.setDescription(description);
-        channel.enableLights(true);
-        channel.setLightColor(Color.RED);
-        channel.enableVibration(true);
-        channel.setVibrationPattern(new long[]{100, 200, 300, 400,
-                500, 400, 300, 200, 400});
-        notificationManager.createNotificationChannel(channel);
-    }
 
-    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
-    public void sendNotification(View view) {
-        String replyLabel = "Enter your reply here";
-        RemoteInput remoteInput =
-                new RemoteInput.Builder(KEY_TEXT_REPLY)
-                        .setLabel(replyLabel)
-                        .build();
-        Intent resultIntent = new Intent(this, MainActivity.class);
 
-        PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        final Icon icon =
-                Icon.createWithResource(MainActivity.this,
-                        android.R.drawable.ic_dialog_info);
-        Notification.Action replyAction =
-                new Notification.Action.Builder(
-                        icon,
-                        "Reply", resultPendingIntent)
-                        .addRemoteInput(remoteInput)
-                        .build();
 
-        Notification newMessageNotification =
-                new Notification.Builder(this, channelID)
-                        .setColor(ContextCompat.getColor(this,
-                                R.color.colorPrimary))
-                        .setSmallIcon(
-                                android.R.drawable.ic_dialog_info)
-                        .setContentTitle("My Notification")
-                        .setContentText("This is a test message")
-                        .addAction(replyAction).build();
-        NotificationManager notificationManager =
-                (NotificationManager)
-                        getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(notificationId,
-                newMessageNotification);
-    }
 
 
 

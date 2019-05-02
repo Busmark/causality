@@ -5,32 +5,40 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.util.UUID;
+
 
 @Entity(tableName = "question_table")
 public class Question {
 
-//    @PrimaryKey()
-//    @NonNull
-//    private int id;
+    @PrimaryKey
+    @NonNull
+    private String QuestionId;
 
-
+    @NonNull
     private boolean isActive = true;
 
     @NonNull
-    private String questionType;
+    @ColumnInfo(name = "question_text")
+    private String questionText;
 
-    @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "text")
-    private String text;
+    @ColumnInfo(name = "notification_time") //TT:mm
+    private String notificationTime;
 
+    public Question(@NonNull String questionText, String notificationTime) {
+        QuestionId = UUID.randomUUID().toString();
+        this.questionText = questionText;
+        this.notificationTime = notificationTime;
+    }
 
+    @NonNull
+    public String getQuestionId() {
+        return QuestionId;
+    }
 
-
-    public Question(boolean isActive, @NonNull String questionType, @NonNull String text) {
-        this.isActive = isActive;
-        this.questionType = questionType;
-        this.text = text;
+    public void setQuestionId(@NonNull String questionId) {
+        QuestionId = questionId;
     }
 
     public boolean isActive() {
@@ -42,20 +50,20 @@ public class Question {
     }
 
     @NonNull
-    public String getQuestionType() {
-        return questionType;
+    public String getQuestionText() {
+        return questionText;
     }
 
-    public void setQuestionType(@NonNull String questionType) {
-        this.questionType = questionType;
+    public void setQuestionText(@NonNull String questionText) {
+        this.questionText = questionText;
     }
 
     @NonNull
-    public String getText() {
-        return text;
+    public String getNotificationTime() {
+        return notificationTime;
     }
 
-    public void setText(@NonNull String text) {
-        this.text = text;
+    public void setNotificationTime(@NonNull String notificationTime) {
+        this.notificationTime = notificationTime;
     }
 }

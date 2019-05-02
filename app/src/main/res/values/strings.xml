@@ -22,8 +22,6 @@ limitations under the License. -->
 
     <!--Main Activity-->
     <string name="button_new_question">New Question</string>
-    <string name="button_create_inquiry">Create Inquiry</string>
-    <string name="button_investigate_inquiry">Investigate Inquiry</string>
 
     <!--New Question-->
     <string name="q_instruction">Write a question</string>
@@ -36,15 +34,6 @@ limitations under the License. -->
     <string name="hint_question">Write your question here…</string>
     <string name="hint_interval">Pick an interval…</string>
     <string name="empty_not_saved">Question not saved because it is empty.</string>
-
-
-
-    <!--Create Inquiry -->
-    <string name="inquiry_instruction_1">Pick an Effect</string>
-    <string name="inquiry_instruction_2">Pick a Cause</string>
-
-    <!--Investigate Inquiry -->
-
 
 
 

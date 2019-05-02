@@ -12,7 +12,7 @@ import java.util.List;
 // - Repository is completely separated from the UI through the ViewModel.
 public class QuestionViewModel extends AndroidViewModel  {
 
-    private final String TAG = "app";
+    private final String TAG = "causalityapp";
 
     private QuestionRepository mRepository;
     private LiveData<List<Question>> mAllQuestions;

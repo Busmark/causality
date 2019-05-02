@@ -13,7 +13,7 @@ import oscar.gmail.com.causality.AppDatabase;
 // See the BasicSample in the android-architecture-components repository at
 // https://github.com/googlesamples
 public class QuestionRepository {
-    private final String TAG = "app";
+    private final String TAG = "causalityapp";
 
     private QuestionDao mQuestionDao;
     private LiveData<List<Question>> mAllQuestions;

@@ -12,7 +12,7 @@ import oscar.gmail.com.causality.question.Question;
 import oscar.gmail.com.causality.question.QuestionDao;
 
 
-@Database(entities = {Question.class}, version = 3, exportSchema = false)
+@Database(entities = {Question.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract QuestionDao questionDao();
@@ -21,7 +21,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
     public static AppDatabase getDatabase(final Context context) {
-        final String TAG = "app";
+        final String TAG = "causalityapp";
 
 
         if (INSTANCE == null) {
@@ -62,7 +62,7 @@ public abstract class AppDatabase extends RoomDatabase {
      * If you want to start with more questions, just add them.
      */
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
-        private final String TAG = "app";
+        private final String TAG = "causalityapp";
 
         private final QuestionDao mDao;
 
@@ -76,9 +76,9 @@ public abstract class AppDatabase extends RoomDatabase {
             // Not needed if you only populate on creation.
             mDao.deleteAll();
 
-            Question question = new Question(true, "CAUSE", "När gick jag till sängs igår?");
+            Question question = new Question("Vad åt jag till middag?",  "19:00");
             mDao.insert(question);
-            question = new Question(true, "EFFECT", "Kände jag mig utvilad?");
+            question = new Question("Känner jag mig utvilad?", "09:00");
             mDao.insert(question);
             return null;
         }

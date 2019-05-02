@@ -56,24 +56,25 @@ So, we are leaving the template code in. -->
                 android:textColor="@color/buttonLabel"
                 android:onClick="newQuestionBtnClicked"/>
 
-            <Button
-                android:id="@+id/button_create_inquiry"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/button_create_inquiry"
-                android:textColor="@color/buttonLabel"
-                android:onClick="createInquiryBtnClicked"/>
 
             <Button
-                android:id="@+id/button_investigate_inquiry"
+                android:id="@+id/view_questions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
-                android:text="@string/button_investigate_inquiry"
+                android:text="Plats för View Questions"
                 android:textColor="@color/buttonLabel" />
+
+            <Button
+                android:id="@+id/orderNotification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimary"
+                android:text="Order Notification"
+                android:textColor="@color/buttonLabel"
+                android:onClick="sendNotification"/>
 
             <Button
                 android:id="@+id/orderAlarm"
@@ -81,11 +82,9 @@ So, we are leaving the template code in. -->
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
-                android:text="Order Notification"
+                android:text="Order Alarm"
                 android:textColor="@color/buttonLabel"
-                android:onClick="sendTutorialNotification"/>
-
-
+                android:onClick="sendAlarm"/>
 
 
 

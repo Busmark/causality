@@ -16,30 +16,34 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.question.Question;
-import oscar.gmail.com.causality.question.QuestionType;
 import oscar.gmail.com.causality.question.QuestionViewModel;
+import oscar.gmail.com.causality.services.AlarmReceiver;
 import oscar.gmail.com.causality.services.NotificationNotifier;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String TAG = "app";
+    private final String TAG = "causalityapp";
 
     //New Question
     public QuestionViewModel mQuestionViewModel;
@@ -47,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_INTERVAL = "Interval";
     private EditText createQuestionEditText;
     private String chosenQuestionInterval = "";
-    private String[] notificationDays= new String[6];
-    private String notificationTime;
 
     //Create Inquiry
     private String chosenQuestionEffect = "";
@@ -70,53 +72,49 @@ public class MainActivity extends AppCompatActivity {
         //caches all the questions
         mQuestionViewModel.getAllQuestions()
                             .observe(this, questions -> upToDateListofQuestions = questions);
+
     }
 
+    public void sendAlarm(View view) {
+        Log.i(TAG, "MainActivity: Setting up AlarmManager");
+
+        // Calendar
+        Calendar calendar = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") int minutes = Integer.parseInt(new SimpleDateFormat("mm").format(calendar.getTime()));
+        @SuppressLint("SimpleDateFormat") int hours = Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
+        calendar.set(Calendar.MINUTE, minutes + 2);
+
+        // intent
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        intent.setAction("MY_NOTIFICATION_MESSAGE");
+        String dataint = Integer.toString(hours) + ":" + Integer.toString(minutes + 2);
+        intent.putExtra("deliverytime", dataint);
+        Log.i(TAG, "Main: Data in AlarmIntent = " + intent.getStringExtra("deliverytime"));
+
+        // pendingIntent
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // AlarmManager
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        //todo: RTC_WAKEUP is for dev.purpose. Change to RTC at prod.
+        am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        //am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+
     //todo: ska detta göras i annan tråd eller rent av från AnswerViewModel??
-    public void sendTutorialNotification(View view) {
+    public void sendNotification(View view) {
         notifier = new NotificationNotifier(this);
-        notifier.sendTutorialNotification(view);
+        notifier.sendNotification(view);
     }
 
     public void newQuestionBtnClicked(View v) {
         setContentView(R.layout.new_question);
     }
 
-    public void createInquiryBtnClicked(View v) {
-        setContentView(R.layout.create_inquiry);
-        populateCreateInquirySpinners();
-    }
 
-    private void populateCreateInquirySpinners() {
-        //Todo: hämta en spinner via xml eller factory i stället?
-        //se hur jag gjorde på saveQuestionButton...
-        Spinner allEffectQuestions = findViewById(R.id.all_effects_spinner);
-        Spinner allCauseQuestions = findViewById(R.id.all_causes_spinner);
-
-        ArrayAdapter<CharSequence> effectQuestionsForSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> causeQuestionsForSpinner = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-
-        upToDateListofQuestions.forEach(question -> {
-            if (question.getQuestionType().matches(QuestionType.EFFECT.toString()))
-                effectQuestionsForSpinner.add(question.getText());
-            if (question.getQuestionType().matches(QuestionType.CAUSE.toString()))
-                causeQuestionsForSpinner.add(question.getText());
-                }
-        );
-        effectQuestionsForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        causeQuestionsForSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        allEffectQuestions.setAdapter(effectQuestionsForSpinner);
-        allCauseQuestions.setAdapter(causeQuestionsForSpinner);
-    }
-
-    public void saveInquiryBtnClicked(View v) {
-
-        String effect = ((Spinner)findViewById(R.id.all_effects_spinner)).getSelectedItem().toString();
-//        String cause = ((Spinner)findViewById(R.id.all_causes_spinner)).getSelectedItem().toString();
-
-        setContentView(R.layout.activity_main);
-    }
 
     public void cancelBtnClicked(View v) {
         setContentView(R.layout.activity_main);
@@ -127,51 +125,20 @@ public class MainActivity extends AppCompatActivity {
     public void saveQuestionBtnClicked(View v) {
 
         createQuestionEditText = findViewById(R.id.new_question_text);
-        String spinnerText = ((Spinner)findViewById(R.id.question_type_spinner)).getSelectedItem().toString();
-
+        //todo: fånga upp notisTid
         if (TextUtils.isEmpty(createQuestionEditText.getText())) {
             setResult(RESULT_CANCELED);
         } else {
             String text = createQuestionEditText.getText().toString();
-            Question question = new Question(true, spinnerText,  text);
+            String notification_hour = ((Spinner)findViewById(R.id.hour_spinner)).getSelectedItem().toString();
+            String notification_mins = ((Spinner)findViewById(R.id.minute_spinner)).getSelectedItem().toString();
+            String notification_time = notification_hour + ":" +notification_mins;
+
+            Log.i(TAG, "not.time = " + notification_time);
+            Question question = new Question(text,  null);
             mQuestionViewModel.insert(question);
             setContentView(R.layout.activity_main);
         }
     }
 
-    public void onWeekdayCheckboxClicked(View view) {
-
-        boolean checked = ((CheckBox) view).isChecked();
-
-        switch (view.getId()) {
-            case R.id.monday:
-                Log.i(TAG, "Monday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-            case R.id.tuesday:
-                Log.i(TAG, "tuesday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-            case R.id.wednesday:
-                Log.i(TAG, "wednesday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-            case R.id.thursday:
-                Log.i(TAG, "thursday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-            case R.id.friday:
-                Log.i(TAG, "friday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-            case R.id.saturday:
-                Log.i(TAG, "saturday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-            case R.id.sunday:
-                Log.i(TAG, "sunday clicked");
-                Log.i(TAG, "" + view.getId());
-                break;
-        }
-    }
 }

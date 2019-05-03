@@ -26,6 +26,7 @@ limitations under the License. -->
     <!--New Question-->
     <string name="q_instruction">Write a question</string>
     <string name="q_type_instruction">Define question</string>
+    <string name="set_reps_instruction">How often?</string>
     <string name="set_day_instruction">Pick day/days</string>
     <string name="set_time_instruction">Pick a time</string>
     <string name="a_instruction">Pick an interval</string>

@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
 
 import oscar.gmail.com.causality.R;
 
@@ -48,14 +47,16 @@ public class NotificationNotifier {
         notificationManager.createNotificationChannel(channel);
     }
 
-    public void sendNotification(View view) {
-        String replyLabel = "Enter your reply here";
+    public void sendNotification(String questionText, String questionId) {
+        String replyLabel = "Enter your answer here";
         RemoteInput remoteInput =
                 new RemoteInput.Builder(KEY_TEXT_REPLY)
                         .setLabel(replyLabel)
                         .build();
 
         Intent resultIntent = new Intent(mainActivityContext, NotificationReceiver.class);
+        resultIntent.putExtra("questionText", questionText);
+        resultIntent.putExtra("questionId", questionId);
 
         PendingIntent resultPendingIntent =
                 PendingIntent.getService(
@@ -70,7 +71,7 @@ public class NotificationNotifier {
         Notification.Action replyAction =
                 new Notification.Action.Builder(
                         icon,
-                        "Reply", resultPendingIntent)
+                        "Answer", resultPendingIntent)
                         .addRemoteInput(remoteInput)
                         .build();
 
@@ -80,8 +81,8 @@ public class NotificationNotifier {
                                 R.color.colorPrimary))
                         .setSmallIcon(
                                 android.R.drawable.ic_dialog_info)
-                        .setContentTitle("My Notification")
-                        .setContentText("This is a test message")
+                        .setContentTitle("My Notification")             //todo: Ska stå Causality
+                        .setContentText(questionText)       //todo: Ska stå Question-text
                         .addAction(replyAction).build();
 
         //todo; varför skapar vi upp en ny? KAn vi inte använda den globala?

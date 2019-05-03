@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
+
+import oscar.gmail.com.causality.AppDatabase;
+import oscar.gmail.com.causality.answer.Answer;
 
 
 public class NotificationReceiver extends IntentService {
@@ -20,15 +22,21 @@ public class NotificationReceiver extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        Log.i(TAG, "NotReceiver: Got an intent");
+
+        // todo: hur illa är det att min bakgrundsservice pratar direkt med databasen?
+//        AnswerRepository repo = new AnswerRepository(getApplication());
+        AppDatabase db = AppDatabase.getDatabase(this);
+
+        //todo: hur illa är det att jag exponerar questionId´t?
         Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
         if (remoteInput != null) {
+            // tar emot svaret
             String inputString = remoteInput.getCharSequence(
                     KEY_TEXT_REPLY).toString();
-            Log.i(TAG, "NotReceiver: Text in  = " + inputString);
-            //todo: när modellering är klar, spara då ner ett Answer härifrån.
-            // Frågan är bara hur jag ska få tag i rätt Question som hör till remoteInput...
-            // Ska jag skicka med UUID för Question? Då blir det väl rätt i databasens fkQuestion?
+            //tar emot frågans id
+            String questionId = intent.getStringExtra("questionId");
+
+            db.answerDao().insert(new Answer(questionId, inputString));
         }
 
         //todo: stäng ner notification OM det gick att spara datan. Annars be om svaret igen
@@ -36,7 +44,7 @@ public class NotificationReceiver extends IntentService {
         notificationManager.cancel(102);
 
 
-
+        //todo: vill jag skicka ett mottagarnotis till användaren, typ "tack".
 
 
 //        //OM jag vill skicka en mottagarNotification till användaren kan jag använda detta

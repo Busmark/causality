@@ -85,6 +85,25 @@ limitations under the License. -->
         android:spinnerMode="dropdown" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/set_reps_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/set_reps_instruction"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/buttonLabel"
+        android:padding="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
+        android:textSize="18sp"/>
+    <Spinner
+        android:id="@+id/reps_spinner"
+        android:layout_width="50pt"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:entries="@array/reps"
+        android:spinnerMode="dropdown"/>
+
 
     <!--<TextView-->
         <!--android:id="@+id/answer_instruction"-->

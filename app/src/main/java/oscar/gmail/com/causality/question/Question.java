@@ -13,7 +13,8 @@ public class Question {
 
     @PrimaryKey
     @NonNull
-    private String QuestionId;
+    @ColumnInfo(name = "question_id")
+    private String id;
 
     @NonNull
     private boolean isActive = true;
@@ -27,18 +28,18 @@ public class Question {
     private String notificationTime;
 
     public Question(@NonNull String questionText, String notificationTime) {
-        QuestionId = UUID.randomUUID().toString();
+        id = UUID.randomUUID().toString();
         this.questionText = questionText;
         this.notificationTime = notificationTime;
     }
 
     @NonNull
-    public String getQuestionId() {
-        return QuestionId;
+    public String getId() {
+        return id;
     }
 
-    public void setQuestionId(@NonNull String questionId) {
-        QuestionId = questionId;
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 
     public boolean isActive() {

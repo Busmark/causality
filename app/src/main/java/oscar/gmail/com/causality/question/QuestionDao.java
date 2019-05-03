@@ -25,4 +25,5 @@ public interface QuestionDao {
 
     @Query("SELECT question_id FROM question_table where question_text LIKE :question_text")
     String getQuestionId(String question_text);
+
 }

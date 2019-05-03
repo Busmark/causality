@@ -3,6 +3,7 @@ package oscar.gmail.com.causality.question;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
@@ -35,10 +36,9 @@ public class QuestionRepository {
     // Like this, Room ensures that you're not doing any long running operations on the main
     // thread, blocking the UI.
     public void insert(Question question) {
+        Log.i(TAG, "id = " + question.getId());
         new insertAsyncTask(mQuestionDao).execute(question);
     }
-
-
 
     private static class insertAsyncTask extends AsyncTask<Question, Void, Void> {
         private final String TAG = "app";

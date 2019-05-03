@@ -19,8 +19,6 @@ package oscar.gmail.com.causality.ui;
 import android.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.os.Bundle;
@@ -50,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
     public QuestionViewModel mQuestionViewModel;
     private List<Question> upToDateListofQuestions;
-    private LiveData<List<Question>> liveDataListOfQuestions;
-    private Observer<List<Question>> observedListOfQuestions;
 
     public AnswerViewModel mAnswerViewModel;
     private List<Answer> upToDateListOfAnswers;
@@ -73,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         mQuestionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
         mAnswerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
 
+//        final Observer<List<Question>> nameObserver = questions -> upToDateListofQuestions = questions;
+//        mQuestionViewModel.getAllQuestions().observe(this, nameObserver);
 
         //caches all the questions
         mQuestionViewModel.getAllQuestions()
@@ -82,12 +80,8 @@ public class MainActivity extends AppCompatActivity {
                             .observe(this, answers -> upToDateListOfAnswers = answers);
     }
 
-
     //används för att skapa X alarm
     public void scheduleJob(String questionText, String questionId, String alarm) {
-
-        Log.i(TAG, "list size is: " + upToDateListofQuestions.size());
-
 
         PersistableBundle stringsToBeAdded = new PersistableBundle();
         stringsToBeAdded.putString("text", questionText);
@@ -186,33 +180,19 @@ public class MainActivity extends AppCompatActivity {
             if(reps == 1) {
                 notification_time = "1200";
             }
-            mQuestionViewModel.insert(new Question(text, notification_time));
+            String qID = mQuestionViewModel.insert(new Question(text, notification_time));
             setContentView(R.layout.activity_main);
 
-            Log.i(TAG, "list size is: " + upToDateListofQuestions.size());
-
-            //todo: Ny Question har ännu inte uppdaterat upToDateListofQuestions.
-            //Då kan jag inte heller få tag i nya Question.getId
-
-            Log.i(TAG, "list size is: " + upToDateListofQuestions.size());
-
-            liveDataListOfQuestions = mQuestionViewModel.getAllQuestions();
-            try {
-                Log.i(TAG, "size = " + liveDataListOfQuestions.getValue().size());
-            } catch (Exception e) {
-                Log.i(TAG, "nullpointer?");
-            }
 
 
-//            String id = upToDateListofQuestions.get(upToDateListofQuestions.size()).getId();
             Log.i(TAG, "qText is = " + text);
             Log.i(TAG, "time = " + notification_time);
             Log.i(TAG, "reps is = " + reps);
-//            Log.i(TAG, "id is = " + id);
+            Log.i(TAG, "id is = " + qID);
 
-//            for(int i = 0; i < reps; i++)  {
-//                scheduleJob(text, id, notification_time);
-//            }
+            for(int i = 0; i < reps; i++)  {
+                scheduleJob(text, qID, notification_time);
+            }
         }
     }
 

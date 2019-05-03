@@ -27,10 +27,10 @@ public class QuestionViewModel extends AndroidViewModel  {
         return mAllQuestions;
     }
 
-    public void insert(Question question) {
+    public String insert(Question question) {
         mRepository.insert(question);
+        return question.getId();
     }
-
 
 }
 

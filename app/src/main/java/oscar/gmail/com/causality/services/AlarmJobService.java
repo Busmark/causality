@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -25,8 +26,14 @@ public class AlarmJobService extends JobService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int counter = params.getJobId();
-                String all = Integer.toString(counter);
+                //todo: gör om så att requestCode blir något annat än tiden för notifikationen
+                int requestCodeForPendingIntent = params.getJobId();
+                PersistableBundle bundle = params.getExtras();
+                String questionText = (String) bundle.get("text");
+                String questionId = (String) bundle.get("id");
+                String alarmTime = (String) bundle.get("alarm");
+
+                String all = Integer.toString(requestCodeForPendingIntent);
                 String hour = all.substring(0,2);
                 String mins = all.substring(2,4);
 
@@ -43,20 +50,19 @@ public class AlarmJobService extends JobService {
 
                 // intent
                 Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                intent.putExtra("intent_id", counter);
+                intent.putExtra("text", questionText);
+                intent.putExtra("id", questionId);
+
                 intent.setAction("MY_NOTIFICATION_MESSAGE");
 
                 // pendingIntent
-                PendingIntent pendingIntent =
-                        PendingIntent.getBroadcast(getApplicationContext(), counter, intent, PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCodeForPendingIntent, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 // AlarmManager
                 AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
                 //todo: RTC_WAKEUP is for dev.purpose. Change to RTC at prod.
-//                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
-//                am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
 
                 Log.i(TAG, "New thread: Job finished");
                 jobFinished(params, false);

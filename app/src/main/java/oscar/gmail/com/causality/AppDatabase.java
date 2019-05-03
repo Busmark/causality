@@ -35,7 +35,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this codelab.
                             .fallbackToDestructiveMigration()
-                            .addCallback(sRoomDatabaseCallback)
+                            .addCallback(sRoomDatabaseCallback) //tömmer db´n och fyller upp den med default data
                             .build();
                 }
             }

@@ -19,9 +19,12 @@ package oscar.gmail.com.causality.ui;
 import android.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -47,18 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
     public QuestionViewModel mQuestionViewModel;
     private List<Question> upToDateListofQuestions;
+    private LiveData<List<Question>> liveDataListOfQuestions;
+    private Observer<List<Question>> observedListOfQuestions;
 
     public AnswerViewModel mAnswerViewModel;
     private List<Answer> upToDateListOfAnswers;
 
     int checked = -1;
     String buttonText;
-
-    //New Question
-    public static final String EXTRA_REPLY = "Question";
-    public static final String EXTRA_INTERVAL = "Interval";
-    private EditText createQuestionEditText;
-    private String chosenQuestionInterval = "";
 
     //Create Notification
     NotificationNotifier notifier;
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         mQuestionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
         mAnswerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
 
+
         //caches all the questions
         mQuestionViewModel.getAllQuestions()
                             .observe(this, questions -> upToDateListofQuestions = questions);
@@ -83,18 +83,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //används för att skapa X alarm
+    public void scheduleJob(String questionText, String questionId, String alarm) {
+
+        Log.i(TAG, "list size is: " + upToDateListofQuestions.size());
 
 
-    public void scheduleJob(View view) {
+        PersistableBundle stringsToBeAdded = new PersistableBundle();
+        stringsToBeAdded.putString("text", questionText);
+        stringsToBeAdded.putString("id", questionId);
+        stringsToBeAdded.putString("alarm", alarm);
 
-        int[] alarms = {1128, 1130};
-
-        for (int alarm: alarms) {
             ComponentName componentName = new ComponentName( this, AlarmJobService.class);
-            JobInfo info = new JobInfo.Builder(alarm, componentName)
+            JobInfo info = new JobInfo.Builder(Integer.parseInt(alarm), componentName)
                     .setRequiresCharging(true)
                     .setMinimumLatency(1)
                     .setOverrideDeadline(1)
+                    .setExtras(stringsToBeAdded)
                     .build();
             // för loggning
             JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
@@ -104,9 +109,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.i(TAG, "Main: Job Scheduling failed");
             }
-        }
-    }
 
+    }
 
 
 
@@ -165,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void saveQuestionBtnClicked(View v) {
 
-        createQuestionEditText = findViewById(R.id.new_question_text);
+        EditText createQuestionEditText = findViewById(R.id.new_question_text);
         //todo: fånga upp notisTid
         if (TextUtils.isEmpty(createQuestionEditText.getText())) {
             setResult(RESULT_CANCELED);
@@ -173,20 +177,43 @@ public class MainActivity extends AppCompatActivity {
             String text = createQuestionEditText.getText().toString();
             String notification_hour = ((Spinner)findViewById(R.id.hour_spinner)).getSelectedItem().toString();
             String notification_mins = ((Spinner)findViewById(R.id.minute_spinner)).getSelectedItem().toString();
-            String notification_time = notification_hour + ":" +notification_mins;
+            String notification_time = notification_hour + notification_mins;
             String notification_reps = ((Spinner) findViewById(R.id.reps_spinner)).getSelectedItem().toString();
 
-            Log.i(TAG, "not.time = " + notification_time);
-            Log.i(TAG, "reps is = " + notification_reps);
-            Question question = new Question(text,  notification_time);
-            mQuestionViewModel.insert(question);
+            int reps = Integer.parseInt(notification_reps);
+
+            //vid endast 1 fråga ska notisen komma direkt.
+            if(reps == 1) {
+                notification_time = "1200";
+            }
+            mQuestionViewModel.insert(new Question(text, notification_time));
             setContentView(R.layout.activity_main);
+
+            Log.i(TAG, "list size is: " + upToDateListofQuestions.size());
+
+            //todo: Ny Question har ännu inte uppdaterat upToDateListofQuestions.
+            //Då kan jag inte heller få tag i nya Question.getId
+
+            Log.i(TAG, "list size is: " + upToDateListofQuestions.size());
+
+            liveDataListOfQuestions = mQuestionViewModel.getAllQuestions();
+            try {
+                Log.i(TAG, "size = " + liveDataListOfQuestions.getValue().size());
+            } catch (Exception e) {
+                Log.i(TAG, "nullpointer?");
+            }
+
+
+//            String id = upToDateListofQuestions.get(upToDateListofQuestions.size()).getId();
+            Log.i(TAG, "qText is = " + text);
+            Log.i(TAG, "time = " + notification_time);
+            Log.i(TAG, "reps is = " + reps);
+//            Log.i(TAG, "id is = " + id);
+
+//            for(int i = 0; i < reps; i++)  {
+//                scheduleJob(text, id, notification_time);
+//            }
         }
-
-        // if question is in upToDateListofQuestions
-        // skapa notifications * reps
-
-
     }
 
     public void printAllQuestions(View view) {

@@ -16,45 +16,39 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
-import android.app.AlertDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.ComponentName;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.Button;
 
-import java.util.List;
 
 import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.answer.Answer;
-import oscar.gmail.com.causality.answer.AnswerViewModel;
-import oscar.gmail.com.causality.question.Question;
-import oscar.gmail.com.causality.question.QuestionViewModel;
-import oscar.gmail.com.causality.services.AlarmJobService;
-import oscar.gmail.com.causality.services.NotificationNotifier;
+
+import oscar.gmail.com.causality.question.NewQuestionFragment;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "causalityapp";
 
-    public QuestionViewModel mQuestionViewModel;
-    private List<Question> upToDateListOfQuestions;
+//    public AnswerViewModel mAnswerViewModel;
+
+    private Button newQuestionButton;
+    private Button viewAllQuestions;
+    private Button viewAllAnswers;
+
+    private boolean isFragmentDisplayed = false;
+    static final String STATE_FRAGMENT = "state_of_fragment";
 
 
-    public AnswerViewModel mAnswerViewModel;
-    private List<Answer> upToDateListOfAnswers;
 
-    int checked = -1;
-    String buttonText;
+//    private List<Answer> upToDateListOfAnswers;
+//
+//    int checked = -1;
+//    String buttonText;
 
 
     @Override
@@ -65,86 +59,143 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mQuestionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
-        mAnswerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
+//        mAnswerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
 
-        mAnswerViewModel.getAllAnswers()
-                            .observe(this, answers -> upToDateListOfAnswers = answers);
-        mQuestionViewModel.getAllQuestions()
-                .observe(this, questions -> upToDateListOfQuestions = questions);
+//        mAnswerViewModel.getAllAnswers()
+//                            .observe(this, answers -> upToDateListOfAnswers = answers);
+
+
+        newQuestionButton = findViewById(R.id.button_new_question);
+        viewAllQuestions = findViewById(R.id.button_view_questions);
+        viewAllAnswers = findViewById(R.id.button_view_answers);
+
+        if (savedInstanceState != null) {
+            isFragmentDisplayed =
+                    savedInstanceState.getBoolean(STATE_FRAGMENT);
+            if (isFragmentDisplayed) {
+                // do stuff
+            }
+        }
 
     }
 
-    public String getButtonText() {
-        return buttonText;
+    //Add the following method to MainActivity to save the state of the Fragment if the configuration changes:
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the state of the fragment (true=open, false=closed).
+        savedInstanceState.putBoolean(STATE_FRAGMENT, isFragmentDisplayed);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void newQuestionBtnClicked(View v) {
-        setContentView(R.layout.new_question);
+    public void setFragmentDisplayed(boolean fragmentDisplayed) {
+        isFragmentDisplayed = fragmentDisplayed;
     }
 
-    public void cancelBtnClicked(View v) {
-        setContentView(R.layout.activity_main);
-    }
+    public void newQuestionButtonClicked(View view) {
+    if (!isFragmentDisplayed) {
+        NewQuestionFragment newQuestionFragment = NewQuestionFragment.newInstance();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Add the SimpleFragment.
+        fragmentTransaction.add(R.id.fragment_container, newQuestionFragment).addToBackStack(null).commit();
+        // Update the Button text.
+        // Set boolean flag to indicate fragment is open.
+        isFragmentDisplayed = true;
 
 
-
-    public void saveQuestionBtnClicked(View view) {
-        EditText createQuestionEditText = findViewById(R.id.new_question_text);
-        if (TextUtils.isEmpty(createQuestionEditText.getText())) {
-            setResult(RESULT_CANCELED);
-        } else {
-            String text = createQuestionEditText.getText().toString();
-            String notification_hour = ((Spinner)findViewById(R.id.hour_spinner)).getSelectedItem().toString();
-            String notification_mins = ((Spinner)findViewById(R.id.minute_spinner)).getSelectedItem().toString();
-            String notification_time = notification_hour + notification_mins;
-            String notification_reps = ((Spinner) findViewById(R.id.reps_spinner)).getSelectedItem().toString();
-
-           mQuestionViewModel.saveQuestionBtnClicked(this, text, notification_hour, notification_mins, notification_time, notification_reps);
-           setContentView(R.layout.activity_main);
+    } else {
+        // Get the FragmentManager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // Check to see if the fragment is already showing.
+        NewQuestionFragment simpleFragment = (NewQuestionFragment) fragmentManager
+                .findFragmentById(R.id.fragment_container);
+        if (simpleFragment != null) {
+            // Create and commit the transaction to remove the fragment.
+            FragmentTransaction fragmentTransaction =
+                    fragmentManager.beginTransaction();
+            fragmentTransaction.remove(simpleFragment).commit();
+            isFragmentDisplayed = false;
         }
     }
 
-    public void printAllQuestions(View view) {
-        mQuestionViewModel.printAllQuestions(view);
-    }
 
-    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.
-    public void printAllAnswers(View view) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+}
 
-        String[] texts = mQuestionViewModel.getQuestionTextArray();
 
-        builder.setTitle("Välj och klicka OK")
-                .setSingleChoiceItems(texts, checked, (dialog, which) -> {
-                    checked = which;
-                    buttonText = texts[checked];
-                })
-                .setPositiveButton("Ok", (dialog, id) -> {
-                    // när jag klickar ok vill jag ha alla answer som hör till den frågan.
 
-//                    String pickedQuestionId = mQuestionViewModel.getQuestionId(checked);
-                    String pickedQuestionId = upToDateListOfQuestions.get(checked).getId();
-//                    mAnswerViewModel.printAllAnswers(pickedQuestionId);
 
-                    upToDateListOfAnswers.forEach(answer -> {
-                        if (answer.getFkQuestionId().equals(pickedQuestionId)) {
-                            Log.i(TAG, answer.getAnswerText());
-                        }
-                    });
 
-                })
-                .setNegativeButton("Cancel", (dialog, id) -> {
 
-                });
-        AlertDialog temp = builder.create();
 
-        //todo: behövs denna?
-        temp.setOnDismissListener(dialog -> Log.i(TAG, "what?" + getButtonText()));
-        builder.show();
 
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    public String getButtonText() {
+//        return buttonText;
+//    }
+
+
+
+//    public void printAllQuestions(View view) {
+//        mQuestionViewModel.printAllQuestions(view);
+//    }
+//
+//    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.
+//    public void printAllAnswers(View view) {
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        String[] texts = mQuestionViewModel.getQuestionTextArray();
+//
+//        builder.setTitle("Välj och klicka OK")
+//                .setSingleChoiceItems(texts, checked, (dialog, which) -> {
+//                    checked = which;
+//                    buttonText = texts[checked];
+//                })
+//                .setPositiveButton("Ok", (dialog, id) -> {
+//                    // när jag klickar ok vill jag ha alla answer som hör till den frågan.
+//
+////                    String pickedQuestionId = mQuestionViewModel.getQuestionId(checked);
+//                    String pickedQuestionId = upToDateListOfQuestions.get(checked).getId();
+////                    mAnswerViewModel.printAllAnswers(pickedQuestionId);
+//
+//                    upToDateListOfAnswers.forEach(answer -> {
+//                        if (answer.getFkQuestionId().equals(pickedQuestionId)) {
+//                            Log.i(TAG, answer.getAnswerText());
+//                        }
+//                    });
+//
+//                })
+//                .setNegativeButton("Cancel", (dialog, id) -> {
+//
+//                });
+//        AlertDialog temp = builder.create();
+//
+//        //todo: behövs denna?
+//        temp.setOnDismissListener(dialog -> Log.i(TAG, "what?" + getButtonText()));
+//        builder.show();
+//
+//    }
 
 
 

@@ -26,7 +26,9 @@ So, we are leaving the template code in. -->
     android:layout_height="match_parent"
     tools:context="oscar.gmail.com.causality.ui.MainActivity"
     android:background="@android:color/darker_gray">
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -42,11 +44,7 @@ So, we are leaving the template code in. -->
             app:popupTheme="@style/AppTheme.PopupOverlay"
             android:text="@string/app_name" />
 
-        <LinearLayout
-            android:id="@+id/main_buttons"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+
 
             <Button
                 android:id="@+id/button_new_question"
@@ -56,28 +54,38 @@ So, we are leaving the template code in. -->
                 android:background="@color/colorPrimary"
                 android:text="@string/button_new_question"
                 android:textColor="@color/buttonLabel"
-                android:onClick="newQuestionBtnClicked"/>
+                android:onClick="newQuestionButtonClicked"
+                />
+
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:name="oscar.gmail.com.causality.question.QuestionFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                tools:layout="@layout/fragment_new_questions" />
 
             <Button
-                android:id="@+id/view_questions"
+                android:id="@+id/button_view_questions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
                 android:text="View all Questions"
                 android:textColor="@color/buttonLabel"
-                android:onClick="printAllQuestions"/>
+                />
 
             <Button
-                android:id="@+id/view_answers"
+                android:id="@+id/button_view_answers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
                 android:text="View all Answers"
                 android:textColor="@color/buttonLabel"
-                android:onClick="printAllAnswers"/>
-        </LinearLayout>
+                />
 
     </android.support.design.widget.AppBarLayout>
+
+</ScrollView>
 </android.support.design.widget.CoordinatorLayout>

@@ -2,6 +2,8 @@ package oscar.gmail.com.causality.question;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,28 +19,52 @@ public class QuestionRepository {
     private final String TAG = "causalityapp";
 
     private QuestionDao mQuestionDao;
-    private LiveData<List<Question>> mAllQuestions;
-
+    private MutableLiveData<Integer> insertResult = new MutableLiveData<>();
+    private MutableLiveData<List<Question>> questionList = new MutableLiveData<>();
 
     QuestionRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mQuestionDao = db.questionDao();
-        mAllQuestions = mQuestionDao.getAlphabetizedQuestions();
+        questionList = mQuestionDao.getAlphabetizedQuestions();
     }
 
-    // Room executes all queries on a separate thread.
-    // Observed LiveData will notify the observer when the data has changed.
-    LiveData<List<Question>> getAllQuestions() {
-        return mAllQuestions;
+    public MutableLiveData<Integer> getInsertResult() {
+        return insertResult;
     }
+
+    public MutableLiveData<List<Question>> getQuestionList() {
+        return questionList;
+    }
+
+    public void insert(Question question) {
+//        Log.i(TAG, "id = " + question.getId());
+        insertAsync(question);
+    }
+    private void insertAsync(final Question question) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mQuestionDao.insert(question);
+                    insertResult.postValue(1);
+                } catch (Exception e) {
+                    insertResult.postValue(0);
+                }
+            }
+        }).start();
+    }
+
+
+
 
     // You must call this on a non-UI thread or your app will crash.
     // Like this, Room ensures that you're not doing any long running operations on the main
     // thread, blocking the UI.
-    public void insert(Question question) {
-        Log.i(TAG, "id = " + question.getId());
-        new insertAsyncTask(mQuestionDao).execute(question);
-    }
+//    public void insert(Question question) {
+////        Log.i(TAG, "id = " + question.getId());
+//        new insertAsyncTask(mQuestionDao).execute(question);
+//    }
 
     private static class insertAsyncTask extends AsyncTask<Question, Void, Void> {
         private final String TAG = "app";

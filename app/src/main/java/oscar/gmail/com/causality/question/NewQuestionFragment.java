@@ -1,17 +1,23 @@
 package oscar.gmail.com.causality.question;
 
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.List;
 
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.ui.MainActivity;
@@ -21,12 +27,12 @@ import static android.app.Activity.RESULT_CANCELED;
 public class NewQuestionFragment extends Fragment implements View.OnClickListener {
     private final String TAG = "causalityapp";
 
-    //ska bara användas för att spara ner en Question
-    private QuestionViewModel questionViewModel;
-
     private View rootView;
     private EditText createQuestionEditText;
     private Button save_button;
+
+    QuestionViewModel questionViewModel;
+
 
     public NewQuestionFragment() {
     }
@@ -42,22 +48,16 @@ public class NewQuestionFragment extends Fragment implements View.OnClickListene
         save_button.setOnClickListener(this);
         createQuestionEditText = rootView.findViewById(R.id.new_question_text);
 
+        questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+//        questionViewModel.getmAllQuestions().getValue().forEach(question -> {
+//            Log.i(TAG, "question = " + question.getQuestionText());
+//        });
+
+
         return rootView;
     }
 
-    /*
-    LiveData<WeatherEntry[]> networkData = mWeatherNetworkDataSource.getCurrentWeatherForecasts();
-        networkData.observeForever(newForecastsFromNetwork -> {
-            mExecutors.diskIO().execute(() -> {
-                // Deletes old historical data
-                deleteOldData();
-                Log.d(LOG_TAG, "Old weather deleted");
-                // Insert our new weather data into Sunshine's database
-                mWeatherDao.bulkInsert(newForecastsFromNetwork);
-                Log.d(LOG_TAG, "New values inserted");
-            });
-        });
-     */
+
 
 
 

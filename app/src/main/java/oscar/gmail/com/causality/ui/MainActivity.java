@@ -16,18 +16,28 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+
+import java.util.List;
 
 import oscar.gmail.com.causality.R;
 
 import oscar.gmail.com.causality.question.NewQuestionFragment;
+import oscar.gmail.com.causality.question.Question;
+import oscar.gmail.com.causality.question.QuestionViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "causalityapp";
 
 //    public AnswerViewModel mAnswerViewModel;
+
+    private QuestionViewModel questionViewModel;
 
     private Button newQuestionButton;
     private Button viewAllQuestions;
@@ -58,6 +70,15 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+
+        questionViewModel.getInsertResult().observe(this, integer -> Log.i(TAG, "Result = " + integer));
+        questionViewModel.getQuestionList().observe(this, questions -> {
+            questions.forEach(question -> {
+                Log.i(TAG, "Question text is: " + question.getQuestionText());
+            });
+        });
 
 //        mAnswerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
 
@@ -91,7 +112,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newQuestionButtonClicked(View view) {
-    if (!isFragmentDisplayed) {
+
+        Question question = new Question("newTest2", "0500");
+        questionViewModel.insert(question);
+
+
+
+        if (!isFragmentDisplayed) {
         NewQuestionFragment newQuestionFragment = NewQuestionFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

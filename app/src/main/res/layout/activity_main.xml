@@ -43,6 +43,7 @@ So, we are leaving the template code in. -->
             android:text="@string/app_name" />
 
         <LinearLayout
+            android:id="@+id/main_buttons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -76,41 +77,6 @@ So, we are leaving the template code in. -->
                 android:text="View all Answers"
                 android:textColor="@color/buttonLabel"
                 android:onClick="printAllAnswers"/>
-
-            <!--Här ska en ruta ploppa upp där jag kan välja vilken
-            fråga som ska skickas med i notification så att användaren vet
-            vilken fråga som gäller och så att svaret sparas rätt i db´n-->
-            <Button
-                android:id="@+id/orderNotification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
-                android:text="Order Notification (for demo)"
-                android:textColor="@color/buttonLabel"
-                android:onClick="getListOfQuestionsAsAlertDialog"/>
-
-            <!--<Button-->
-                <!--android:id="@+id/orderAlarm"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:text="Order Alarm (for demo)"-->
-                <!--android:textColor="@color/buttonLabel"-->
-                <!--android:onClick="sendAlarm"/>-->
-
-            <!--<Button-->
-                <!--android:id="@+id/schedule_alarm"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:background="@color/colorPrimary"-->
-                <!--android:text="Order Job (for demo)"-->
-                <!--android:textColor="@color/buttonLabel"-->
-                <!--android:onClick="scheduleJob"/>-->
-
-
         </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>

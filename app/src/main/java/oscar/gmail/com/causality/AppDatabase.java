@@ -25,8 +25,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static AppDatabase getDatabase(final Context context) {
         final String TAG = "causalityapp";
-
-
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {

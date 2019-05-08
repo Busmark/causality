@@ -11,16 +11,6 @@ import java.util.UUID;
 
 import oscar.gmail.com.causality.question.Question;
 
-/*
-foreignKeys = {
-                @ForeignKey(entity = ProductEntity.class,
-                        parentColumns = "id",
-                        childColumns = "productId",
-                        onDelete = ForeignKey.CASCADE)},
-        indices = {@Index(value = "productId")
-        })
- */
-
 
 @Entity(tableName = "answer_table",
         foreignKeys = {

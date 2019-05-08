@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import oscar.gmail.com.causality.AppDatabase;
+import oscar.gmail.com.causality.question.Question;
 
 public class AnswerRepository {
 
@@ -35,7 +36,7 @@ public class AnswerRepository {
         new insertAsyncTask(answerDao).execute(answer);
     }
 
-    private static class insertAsyncTask extends AsyncTask<Answer, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<Answer, Question, Void> {
         private final String TAG = "app";
 
         private AnswerDao ansyncAnswerDao;

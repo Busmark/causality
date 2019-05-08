@@ -3,6 +3,7 @@ package oscar.gmail.com.causality.answer;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.util.Log;
 
 import java.util.List;
 
@@ -23,8 +24,15 @@ public class AnswerViewModel extends AndroidViewModel {
         return mAllAnswers;
     }
 
-
     public void insert(Answer answer) {
         mRepository.insert(answer);
+    }
+
+    public void printAllAnswers(String pickedQuestionId) {
+        mAllAnswers.getValue().forEach(answer -> {
+            if (answer.getFkQuestionId().equals(pickedQuestionId)) {
+                Log.i(TAG, answer.getAnswerText());
+            }
+        });
     }
 }

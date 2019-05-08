@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import oscar.gmail.com.causality.R;
 

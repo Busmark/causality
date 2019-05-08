@@ -1,26 +1,14 @@
 package oscar.gmail.com.causality.question;
 
 import android.app.Application;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.content.ComponentName;
-import android.content.Context;
-import android.os.PersistableBundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
+
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import java.util.List;
-
-import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.services.AlarmJobService;
-
-import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 // Using LiveData and caching what getAlphabetizedQuestionss returns has several benefits:
 // - We can put an observer on the data (instead of polling for changes) and only update the

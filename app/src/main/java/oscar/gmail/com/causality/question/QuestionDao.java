@@ -1,10 +1,9 @@
 package oscar.gmail.com.causality.question;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public interface QuestionDao {
 
     @Query("SELECT * from question_table ORDER BY question_text ASC")
-    MutableLiveData<List<Question>> getAlphabetizedQuestions();
+    LiveData<List<Question>> getAlphabetizedQuestions();
 
     @Insert
     void insert(Question question);

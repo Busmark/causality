@@ -4,8 +4,8 @@ import android.app.IntentService;
 import android.app.RemoteInput;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import android.util.Log;
 
 import oscar.gmail.com.causality.AppDatabase;

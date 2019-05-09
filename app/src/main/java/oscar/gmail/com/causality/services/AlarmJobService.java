@@ -64,7 +64,7 @@ public class AlarmJobService extends JobService {
                 am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
 
-                Log.i(TAG, "New thread: Job finished");
+                Log.i(TAG, "AlarmJobService thread: Job finished");
                 jobFinished(params, false);
             }
         }).start();

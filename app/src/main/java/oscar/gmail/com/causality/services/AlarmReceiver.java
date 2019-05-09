@@ -21,10 +21,5 @@ public class AlarmReceiver extends BroadcastReceiver {
             //todo: skicka med frågans text.
             notifier = new NotificationNotifier(context);
             notifier.sendNotification(questionText, questionId);
-
-
-
-
-        Log.i(TAG, "notifier work done");
     }
 }

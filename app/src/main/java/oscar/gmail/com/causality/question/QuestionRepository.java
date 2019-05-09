@@ -2,9 +2,9 @@ package oscar.gmail.com.causality.question;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
@@ -36,7 +36,8 @@ public class QuestionRepository {
     }
 
     public void insert(Question question) {
-//        Log.i(TAG, "id = " + question.getId());
+        Log.i(TAG, "id = " + question.getId());
+
         insertAsync(question);
     }
     private void insertAsync(final Question question) {

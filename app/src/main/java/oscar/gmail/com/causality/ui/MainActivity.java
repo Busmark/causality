@@ -30,6 +30,8 @@ import android.view.View;
 import android.widget.Button;
 
 
+import java.util.List;
+
 import oscar.gmail.com.causality.R;
 
 import oscar.gmail.com.causality.question.NewQuestionFragment;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private QuestionViewModel questionViewModel;
 
+
     private Button newQuestionButton;
     private Button viewAllQuestions;
     private Button viewAllAnswers;
@@ -52,13 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFragmentDisplayed = false;
     static final String STATE_FRAGMENT = "state_of_fragment";
 
-
-
-//    private List<Answer> upToDateListOfAnswers;
-//
-//    int checked = -1;
-//    String buttonText;
-
+    private List<Question> lq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,18 +66,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+        //observes if question has been saved successfully
 
-        questionViewModel.getInsertResult().observe(this, integer -> Log.i(TAG, "Result = " + integer));
-        questionViewModel.getQuestionList().observe(this, questions -> {
-            questions.forEach(question -> {
-                Log.i(TAG, "Question text is: " + question.getQuestionText());
-            });
+        //observes if database question_table changes
+        //todo: om en Question blir sparad ska denna triggas. Kan jag Toasta användaren en Success!
+        //todo: varje gång devicen konfigureras om (vid tiltning) skapas denna igen...
+
+
+        questionViewModel.getQuestionList().observe(this,  questions -> {
+            lq = questions;
         });
-
-//        mAnswerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
-
-//        mAnswerViewModel.getAllAnswers()
-//                            .observe(this, answers -> upToDateListOfAnswers = answers);
 
 
         newQuestionButton = findViewById(R.id.button_new_question);
@@ -110,17 +105,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void newQuestionButtonClicked(View view) {
 
-        Question question = new Question("newTest2", "0500");
-        questionViewModel.insert(question);
-
-
 
         if (!isFragmentDisplayed) {
         NewQuestionFragment newQuestionFragment = NewQuestionFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        // Add the SimpleFragment.
+        // Add the NewQuestionFragment.
         fragmentTransaction.add(R.id.fragment_container, newQuestionFragment).addToBackStack(null).commit();
         // Update the Button text.
         // Set boolean flag to indicate fragment is open.

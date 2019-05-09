@@ -25,7 +25,7 @@ public class AnswerRepository {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    LiveData<List<Answer>> getAllAnswers() {
+    public LiveData<List<Answer>> getAllAnswers() {
         return allAnswers;
     }
 

@@ -58,11 +58,10 @@ So, we are leaving the template code in. -->
                 />
 
             <FrameLayout
-                android:id="@+id/fragment_container"
+                android:id="@+id/new_question_fragment_container"
                 android:name="oscar.gmail.com.causality.question.QuestionFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 tools:layout="@layout/fragment_new_questions" />
 
             <Button
@@ -73,7 +72,14 @@ So, we are leaving the template code in. -->
                 android:background="@color/colorPrimary"
                 android:text="View all Questions"
                 android:textColor="@color/buttonLabel"
+                android:onClick="viewAllQuestionButtonClicked"
                 />
+            <FrameLayout
+                android:id="@+id/all_questions_fragment_container"
+                android:name="oscar.gmail.com.causality.question.QuestionListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/fragment_question_list" />
 
             <Button
                 android:id="@+id/button_view_answers"

@@ -8,7 +8,7 @@
     android:layout_marginLeft="@dimen/big_padding"
     android:layout_marginRight="@dimen/big_padding"
     android:fillViewport="false"
-    tools:context="oscar.gmail.com.causality.question.NewQuestionFragment"
+    tools:context="oscar.gmail.com.causality.ui.NewQuestionFragment"
     android:id="@+id/q_fragment">
 
     <LinearLayout

@@ -16,37 +16,28 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 
 
-import java.util.List;
-
 import oscar.gmail.com.causality.R;
 
-import oscar.gmail.com.causality.question.NewQuestionFragment;
 import oscar.gmail.com.causality.question.Question;
 import oscar.gmail.com.causality.question.QuestionViewModel;
 
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements QuestionListFragment.OnListFragmentInteractionListener {
     private final String TAG = "causalityapp";
 
-//    public AnswerViewModel mAnswerViewModel;
-
     private QuestionViewModel questionViewModel;
-
 
     private Button newQuestionButton;
     private Button viewAllQuestions;
@@ -55,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFragmentDisplayed = false;
     static final String STATE_FRAGMENT = "state_of_fragment";
 
-    private List<Question> lq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,17 +56,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
-        //observes if question has been saved successfully
-
-        //observes if database question_table changes
-        //todo: om en Question blir sparad ska denna triggas. Kan jag Toasta användaren en Success!
-        //todo: varje gång devicen konfigureras om (vid tiltning) skapas denna igen...
-
-
-        questionViewModel.getQuestionList().observe(this,  questions -> {
-            lq = questions;
-        });
-
 
         newQuestionButton = findViewById(R.id.button_new_question);
         viewAllQuestions = findViewById(R.id.button_view_questions);
@@ -104,77 +83,63 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newQuestionButtonClicked(View view) {
-
+        // Get the FragmentManager and begin transaction.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
 
         if (!isFragmentDisplayed) {
         NewQuestionFragment newQuestionFragment = NewQuestionFragment.newInstance();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         // Add the NewQuestionFragment.
-        fragmentTransaction.add(R.id.fragment_container, newQuestionFragment).addToBackStack(null).commit();
+        fragmentTransaction.add(R.id.new_question_fragment_container, newQuestionFragment).addToBackStack(null).commit();
         // Update the Button text.
         // Set boolean flag to indicate fragment is open.
         isFragmentDisplayed = true;
 
-
     } else {
-        // Get the FragmentManager.
-        FragmentManager fragmentManager = getSupportFragmentManager();
         // Check to see if the fragment is already showing.
-        NewQuestionFragment simpleFragment = (NewQuestionFragment) fragmentManager
-                .findFragmentById(R.id.fragment_container);
-        if (simpleFragment != null) {
+        NewQuestionFragment newQuestionFragment = (NewQuestionFragment) fragmentManager
+                .findFragmentById(R.id.new_question_fragment_container);
+        if (newQuestionFragment != null) {
             // Create and commit the transaction to remove the fragment.
-            FragmentTransaction fragmentTransaction =
-                    fragmentManager.beginTransaction();
-            fragmentTransaction.remove(simpleFragment).commit();
+            fragmentTransaction.remove(newQuestionFragment).commit();
             isFragmentDisplayed = false;
         }
     }
-
-
-
 }
 
+    public void viewAllQuestionButtonClicked(View view) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =
+                fragmentManager.beginTransaction();
+
+        if (!isFragmentDisplayed) {
+            QuestionListFragment questionListFragment = QuestionListFragment.newInstance(1);
+            fragmentTransaction.add(R.id.all_questions_fragment_container, questionListFragment).addToBackStack(null).commit();
+            isFragmentDisplayed = true;
+
+        } else {
+            // Check to see if the fragment is already showing.
+            QuestionListFragment questionListFragment = (QuestionListFragment) fragmentManager
+                    .findFragmentById(R.id.all_questions_fragment_container);
+            if (questionListFragment != null) {
+                // Create and commit the transaction to remove the fragment.
+                fragmentTransaction.remove(questionListFragment).commit();
+                isFragmentDisplayed = false;
+            }
+        }
+    }
+
+    @Override
+    public void onListFragmentInteraction(Question item) {
+
+    }
+
+    public QuestionViewModel getQuestionViewModel() {
+        return questionViewModel;
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    public String getButtonText() {
-//        return buttonText;
-//    }
-
-
-
-//    public void printAllQuestions(View view) {
-//        mQuestionViewModel.printAllQuestions(view);
-//    }
-//
 //    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.
 //    public void printAllAnswers(View view) {
 //

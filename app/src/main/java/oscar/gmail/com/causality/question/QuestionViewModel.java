@@ -10,47 +10,49 @@ import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import oscar.gmail.com.causality.answer.Answer;
+import oscar.gmail.com.causality.answer.AnswerRepository;
 import oscar.gmail.com.causality.services.AlarmJobService;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
-// Using LiveData and caching what getAlphabetizedQuestionss returns has several benefits:
-// - We can put an observer on the data (instead of polling for changes) and only update the
-//   the UI when the data actually changes.
-// - CausalityRepository is completely separated from the UI through the ViewModel.
 public class QuestionViewModel extends AndroidViewModel {
-
     private final String TAG = "causalityapp";
 
 
-    private QuestionRepository mRepository;
+    private QuestionRepository questionRepository;
+    private AnswerRepository answerRepository;
+
+    //handles feedback from saving a Question
     private LiveData<Integer> insertResult;
     private LiveData<List<Question>> questionList;
+//    private LiveData<List<Answer>> mAllAnswers;
 
 
     public QuestionViewModel(Application application) {
         super(application);
-        mRepository = new QuestionRepository(application);
-        this.insertResult = mRepository.getInsertResult();
+        questionRepository = new QuestionRepository(application);
+//        mAllAnswers = answerRepository.getAllAnswers();
 
-        this.questionList = mRepository.getQuestionList();
+        this.insertResult = questionRepository.getInsertResult();
 
-//        getQuestionList().observeForever(questions -> {
-//            Log.i(TAG, "size = " + questions.size());
-//        });
+        this.questionList = questionRepository.getQuestionList();
+
+        //krävs en observer för att questionList ska lyssna.
+        getQuestionList().observeForever(questions -> {
+        });
+
+
 
 //        getInsertResult().observeForever(integer -> Log.i(TAG, "Result = " + integer));
     }
 
     public String insert(Question question) {
 
-        mRepository.insert(question);
+        questionRepository.insert(question);
         return question.getId();
     }
 
@@ -103,21 +105,5 @@ public class QuestionViewModel extends AndroidViewModel {
             Log.i(TAG, "Main: Job Scheduling failed");
         }
     }
-
-//    public void printAllQuestions(View view) {
-//        mAllQuestions.getValue().forEach(question -> Log.i(TAG, question.getQuestionText()));
-//
-//    }
-//
-//    public String[] getQuestionTextArray() {
-//        String[] texts = new String[mAllQuestions.getValue().size()];
-//        for (int i = 0; i < mAllQuestions.getValue().size(); i++) {
-//            texts[i] = mAllQuestions.getValue().get(i).getQuestionText();
-//        }
-//        return texts;
-//    }
-//
-//    public void getQuestionId(int checked) {
-//    }
 }
 

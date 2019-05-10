@@ -7,15 +7,27 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
 
+import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.answer.Answer;
 import oscar.gmail.com.causality.answer.AnswerRepository;
 import oscar.gmail.com.causality.services.AlarmJobService;
+import oscar.gmail.com.causality.ui.MainActivity;
+import oscar.gmail.com.causality.ui.NewQuestionFragment;
+import oscar.gmail.com.causality.ui.QuestionListFragment;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
@@ -29,25 +41,27 @@ public class QuestionViewModel extends AndroidViewModel {
     //handles feedback from saving a Question
     private LiveData<Integer> insertResult;
     private LiveData<List<Question>> questionList;
-//    private LiveData<List<Answer>> mAllAnswers;
+    private List<Question> q;
 
 
     public QuestionViewModel(Application application) {
         super(application);
         questionRepository = new QuestionRepository(application);
-//        mAllAnswers = answerRepository.getAllAnswers();
-
         this.insertResult = questionRepository.getInsertResult();
-
         this.questionList = questionRepository.getQuestionList();
 
-        //krävs en observer för att questionList ska lyssna.
-        getQuestionList().observeForever(questions -> {
+
+        questionRepository.getQuestionList().observeForever(new Observer<List<Question>>() {
+            @Override
+            public void onChanged(List<Question> questions) {
+                q = questions;
+            }
         });
+    }
 
 
-
-//        getInsertResult().observeForever(integer -> Log.i(TAG, "Result = " + integer));
+    public List<Question> getQuestions() {
+        return q;
     }
 
     public String insert(Question question) {
@@ -64,8 +78,7 @@ public class QuestionViewModel extends AndroidViewModel {
         return questionList;
     }
 
-
-    public void saveQuestion(Context context, String text, String notification_hour, String notification_mins, String notification_time, String notification_reps) {
+    public void saveQuestion(Context context, String text, String notification_time, String notification_reps) {
         int reps = Integer.parseInt(notification_reps);
 
         //vid endast 1 fråga ska notisen komma direkt.
@@ -82,6 +95,7 @@ public class QuestionViewModel extends AndroidViewModel {
     //används för att skapa X alarm
     public void scheduleJob(Context context, String questionText, String questionId, String alarm) {
 
+        Log.i(TAG, "alarm = " + alarm);
 
 
         PersistableBundle stringsToBeAdded = new PersistableBundle();

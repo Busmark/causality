@@ -5,10 +5,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import java.util.List;
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.question.Question;
 import oscar.gmail.com.causality.question.QuestionRecyclerViewAdapter;
+import oscar.gmail.com.causality.question.QuestionViewModel;
 
 /**
  * A fragment representing a list of Items.
@@ -35,8 +39,8 @@ public class QuestionListFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
-    private List<Question> questionList;
-
+    private QuestionViewModel questionViewModel;
+    private List<Question> upToDateListOfQuestions;
 
 
     /**
@@ -56,6 +60,7 @@ public class QuestionListFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,13 +68,13 @@ public class QuestionListFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-        LiveData<List<Question>> temp = ((MainActivity)getActivity()).getQuestionViewModel().getQuestionList();
-        questionList = temp.getValue();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_question_list, container, false);
 
         // Set the adapter
@@ -81,8 +86,14 @@ public class QuestionListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+                questionViewModel = ((MainActivity) getActivity()).getModel();
+                upToDateListOfQuestions = questionViewModel.getQuestions();
 
-            recyclerView.setAdapter(new QuestionRecyclerViewAdapter(questionList, mListener));
+
+
+            recyclerView.setAdapter(new QuestionRecyclerViewAdapter(upToDateListOfQuestions, mListener));
+
+
         }
         return view;
     }
@@ -103,9 +114,10 @@ public class QuestionListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        //todo: tightCoupling? Ska jag ändra till att anropa ett interface med samma metoder i som MainActivity har?
-        ((MainActivity) getActivity()).setFragmentDisplayed(false);
+    }
 
+    public void setModel(QuestionViewModel questionViewModel) {
+        this.questionViewModel = questionViewModel;
     }
 
     /**

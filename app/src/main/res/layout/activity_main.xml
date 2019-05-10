@@ -54,7 +54,7 @@ So, we are leaving the template code in. -->
                 android:background="@color/colorPrimary"
                 android:text="@string/button_new_question"
                 android:textColor="@color/buttonLabel"
-                android:onClick="newQuestionButtonClicked"
+                android:onClick="mainButtonClicked"
                 />
 
             <FrameLayout
@@ -72,7 +72,7 @@ So, we are leaving the template code in. -->
                 android:background="@color/colorPrimary"
                 android:text="View all Questions"
                 android:textColor="@color/buttonLabel"
-                android:onClick="viewAllQuestionButtonClicked"
+                android:onClick="mainButtonClicked"
                 />
             <FrameLayout
                 android:id="@+id/all_questions_fragment_container"

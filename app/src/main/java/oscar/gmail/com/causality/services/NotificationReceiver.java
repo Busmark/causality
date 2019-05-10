@@ -24,7 +24,7 @@ public class NotificationReceiver extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        Log.i(TAG, "arrived at service_onHandleIntent");
+//        Log.i(TAG, "arrived at service_onHandleIntent");
 
         try {
             // todo: hur illa är det att min bakgrundsservice pratar direkt med databasen?

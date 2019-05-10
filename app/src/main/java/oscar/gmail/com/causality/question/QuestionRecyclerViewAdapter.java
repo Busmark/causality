@@ -2,6 +2,7 @@ package oscar.gmail.com.causality.question;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,24 +11,20 @@ import android.widget.TextView;
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.ui.QuestionListFragment.OnListFragmentInteractionListener;
 
+import java.util.Collections;
 import java.util.List;
 
 
 public class QuestionRecyclerViewAdapter extends RecyclerView.Adapter<QuestionRecyclerViewAdapter.ViewHolder> {
     private final String TAG = "causalityapp";
 
-
     private final OnListFragmentInteractionListener mListener;
-
-    private List<Question> allQuestions;
-
+    private List<Question> questions; // Cached copy of words
 
     public QuestionRecyclerViewAdapter(List<Question> items, OnListFragmentInteractionListener listener) {
-        allQuestions = items;
+        questions = items;
         mListener = listener;
     }
-
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,9 +36,8 @@ public class QuestionRecyclerViewAdapter extends RecyclerView.Adapter<QuestionRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = allQuestions.get(position);
-//        holder.mContentView.setText(mValues.get(position).content);
-        holder.mContentView.setText(allQuestions.get(position).getQuestionText());
+        holder.mItem = questions.get(position);
+        holder.mContentView.setText(questions.get(position).getQuestionText());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,8 +53,9 @@ public class QuestionRecyclerViewAdapter extends RecyclerView.Adapter<QuestionRe
 
     @Override
     public int getItemCount() {
-        return allQuestions.size();
+        return questions.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;

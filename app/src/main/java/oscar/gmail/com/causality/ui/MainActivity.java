@@ -16,7 +16,10 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.app.Fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentManager;
@@ -24,9 +27,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+
+import java.util.List;
 
 import oscar.gmail.com.causality.R;
 
@@ -38,106 +44,143 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
     private final String TAG = "causalityapp";
 
     private QuestionViewModel questionViewModel;
+    private List<Question> upToDateListOfQuestions;
 
     private Button newQuestionButton;
-    private Button viewAllQuestions;
-    private Button viewAllAnswers;
+    private Button viewAllQuestionsButton;
+    private Button viewAllAnswersButton;
 
-    private boolean isFragmentDisplayed = false;
-    static final String STATE_FRAGMENT = "state_of_fragment";
+    private final String NEW_QUESTION_BUTTON_TEXT = "New Question";
+    private final String VIEW_ALL_QUESTIONS_BUTTON_TEXT = "View all Questions";
+    private final String VIEW_ALL_ANSWERS_BUTTON_TEXT = "View all Answers";
 
+    //if a fragment is displayed numberOfDisplayedFragments>0
+    private final String NUMBER_OF_DISPLAYED_FRAGMENTS = "numberOfDisplayedFragments";
+    private int numberOfDisplayedFragments = 0;
+
+    //if a fragment is displayed !displayedFragment = ""
+    private final String DISPLAYED_FRAGMENT = "displayed_fragment";
+    private String displayedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "MainActivity.onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+        //todo. Varje gång jag tiltar telefonen skapas en ny activity
 
         newQuestionButton = findViewById(R.id.button_new_question);
-        viewAllQuestions = findViewById(R.id.button_view_questions);
-        viewAllAnswers = findViewById(R.id.button_view_answers);
+        viewAllQuestionsButton = findViewById(R.id.button_view_questions);
+        viewAllAnswersButton = findViewById(R.id.button_view_answers);
 
         if (savedInstanceState != null) {
-            isFragmentDisplayed =
-                    savedInstanceState.getBoolean(STATE_FRAGMENT);
-            if (isFragmentDisplayed) {
+            numberOfDisplayedFragments = savedInstanceState.getInt(NUMBER_OF_DISPLAYED_FRAGMENTS);
+            displayedFragment = savedInstanceState.getString(DISPLAYED_FRAGMENT);
+
+            // a fragment is displayed load it?
+            if (numberOfDisplayedFragments > 0) {
                 // do stuff
             }
         }
 
+
+        questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+        questionViewModel.getQuestionList().observe(this, new Observer<List<Question>>() {
+
+            @Override
+            public void onChanged(List<Question> questions) {
+                upToDateListOfQuestions = questions;
+            }
+        });
+
+
     }
+
+
 
     //Add the following method to MainActivity to save the state of the Fragment if the configuration changes:
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the state of the fragment (true=open, false=closed).
-        savedInstanceState.putBoolean(STATE_FRAGMENT, isFragmentDisplayed);
+        savedInstanceState.putInt(NUMBER_OF_DISPLAYED_FRAGMENTS, numberOfDisplayedFragments);
+        savedInstanceState.putString(DISPLAYED_FRAGMENT, displayedFragment);
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void setFragmentDisplayed(boolean fragmentDisplayed) {
-        isFragmentDisplayed = fragmentDisplayed;
+
+
+    public QuestionViewModel getModel() {
+        return questionViewModel;
     }
 
-    public void newQuestionButtonClicked(View view) {
-        // Get the FragmentManager and begin transaction.
+
+    public void mainButtonClicked(View view) {
+        Button pressedButton = (Button) view;
+        // numberOfDisplayedFragments 0 = no fragment displayed
+        // numberOfDisplayedFragments 1 = a fragment is displayed
+        switch (numberOfDisplayedFragments) {
+            case 0:
+                openFragment(pressedButton.getText().toString());
+                break;
+            case 1:
+                closeFragment();
+                // same buttonPressed as displayedFragment
+                if (pressedButton.getText().toString().equals(displayedFragment)) {
+                    clearFragmentMembers();
+                }
+                else {
+                    clearFragmentMembers();
+                    mainButtonClicked(view);
+                }
+                break;
+            }
+        }
+
+    public void clearFragmentMembers() {
+        numberOfDisplayedFragments = 0;
+        displayedFragment = "";
+    }
+
+    public void closeFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-
-        if (!isFragmentDisplayed) {
-        NewQuestionFragment newQuestionFragment = NewQuestionFragment.newInstance();
-        // Add the NewQuestionFragment.
-        fragmentTransaction.add(R.id.new_question_fragment_container, newQuestionFragment).addToBackStack(null).commit();
-        // Update the Button text.
-        // Set boolean flag to indicate fragment is open.
-        isFragmentDisplayed = true;
-
-    } else {
-        // Check to see if the fragment is already showing.
-        NewQuestionFragment newQuestionFragment = (NewQuestionFragment) fragmentManager
-                .findFragmentById(R.id.new_question_fragment_container);
-        if (newQuestionFragment != null) {
-            // Create and commit the transaction to remove the fragment.
-            fragmentTransaction.remove(newQuestionFragment).commit();
-            isFragmentDisplayed = false;
+        while (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStackImmediate();
         }
     }
-}
 
-    public void viewAllQuestionButtonClicked(View view) {
+    public void openFragment(String pressedButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (!isFragmentDisplayed) {
-            QuestionListFragment questionListFragment = QuestionListFragment.newInstance(1);
-            fragmentTransaction.add(R.id.all_questions_fragment_container, questionListFragment).addToBackStack(null).commit();
-            isFragmentDisplayed = true;
+        switch (pressedButton) {
+            case NEW_QUESTION_BUTTON_TEXT:
+                NewQuestionFragment newQuestionFragment = NewQuestionFragment.newInstance();
+                fragmentTransaction.add(R.id.new_question_fragment_container, newQuestionFragment).addToBackStack(null).commit();
+                displayedFragment = NEW_QUESTION_BUTTON_TEXT;
+                numberOfDisplayedFragments = 1;
+                break;
 
-        } else {
-            // Check to see if the fragment is already showing.
-            QuestionListFragment questionListFragment = (QuestionListFragment) fragmentManager
-                    .findFragmentById(R.id.all_questions_fragment_container);
-            if (questionListFragment != null) {
-                // Create and commit the transaction to remove the fragment.
-                fragmentTransaction.remove(questionListFragment).commit();
-                isFragmentDisplayed = false;
-            }
+            case VIEW_ALL_QUESTIONS_BUTTON_TEXT:
+                QuestionListFragment questionListFragment = QuestionListFragment.newInstance(1);
+                fragmentTransaction.add(R.id.all_questions_fragment_container, questionListFragment).addToBackStack(null).commit();
+                displayedFragment = VIEW_ALL_QUESTIONS_BUTTON_TEXT;
+                numberOfDisplayedFragments = 1;
+                break;
+
+            case VIEW_ALL_ANSWERS_BUTTON_TEXT:
+                displayedFragment = VIEW_ALL_ANSWERS_BUTTON_TEXT;
+                break;
         }
     }
 
     @Override
     public void onListFragmentInteraction(Question item) {
-
     }
 
-    public QuestionViewModel getQuestionViewModel() {
-        return questionViewModel;
-    }
+
 
 
 //    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.

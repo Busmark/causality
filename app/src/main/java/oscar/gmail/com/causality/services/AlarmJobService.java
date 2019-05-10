@@ -31,11 +31,12 @@ public class AlarmJobService extends JobService {
                 PersistableBundle bundle = params.getExtras();
                 String questionText = (String) bundle.get("text");
                 String questionId = (String) bundle.get("id");
-                String alarmTime = (String) bundle.get("alarm");
+                String alarmTime = (String) bundle.get("alarm"); // tappas 0 i 0800 här?
 
-                String all = Integer.toString(requestCodeForPendingIntent);
-                String hour = all.substring(0,2);
-                String mins = all.substring(2,4);
+//                String all = Integer.toString(requestCodeForPendingIntent);
+
+                String hour = alarmTime.substring(0,2);
+                String mins = alarmTime.substring(2,4);
 
                 int h = Integer.parseInt(hour);
                 int m = Integer.parseInt(mins);

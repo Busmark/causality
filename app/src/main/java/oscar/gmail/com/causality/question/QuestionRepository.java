@@ -2,6 +2,7 @@ package oscar.gmail.com.causality.question;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 import android.util.Log;

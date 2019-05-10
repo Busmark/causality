@@ -13,7 +13,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i(TAG, "AlarmReceiver: Receiving alarm");
+//        Log.i(TAG, "AlarmReceiver: Receiving alarm");
         String questionText = intent.getStringExtra("text");
         String questionId = intent.getStringExtra("id");
 

@@ -11,10 +11,6 @@ import java.util.List;
 
 import oscar.gmail.com.causality.AppDatabase;
 
-// Note that in order to unit test the QuestionRepository, you have to remove the Application
-// dependency. This adds complexity and much more code, and this sample is not about testing.
-// See the BasicSample in the android-architecture-components repository at
-// https://github.com/googlesamples
 public class QuestionRepository {
     private final String TAG = "causalityapp";
 
@@ -37,10 +33,9 @@ public class QuestionRepository {
     }
 
     public void insert(Question question) {
-        Log.i(TAG, "id = " + question.getId());
-
         insertAsync(question);
     }
+
     private void insertAsync(final Question question) {
 
         new Thread(new Runnable() {

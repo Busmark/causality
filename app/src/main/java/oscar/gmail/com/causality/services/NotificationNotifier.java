@@ -27,23 +27,25 @@ public class NotificationNotifier {
         notificationManager =
                 (NotificationManager)
                         mainActivityContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
         createNotificationChannel(channelID,
                 "DirectReply News", "Example News Channel");
     }
 
-
-    //impl tutorial https://www.techotopia.com/index.php/An_Android_Direct_Reply_Notification_Tutorial
     protected void createNotificationChannel(String id, String name, String description) {
 
         int importance = NotificationManager.IMPORTANCE_HIGH;
+
         NotificationChannel channel =
                 new NotificationChannel(id, name, importance);
+
         channel.setDescription(description);
         channel.enableLights(true);
         channel.setLightColor(Color.RED);
         channel.enableVibration(true);
         channel.setVibrationPattern(new long[]{100, 200, 300, 400,
                 500, 400, 300, 200, 400});
+
         notificationManager.createNotificationChannel(channel);
     }
 
@@ -65,9 +67,12 @@ public class NotificationNotifier {
                         resultIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
+
         final Icon icon =
                 Icon.createWithResource(mainActivityContext,
                         R.drawable.ic_add_black_24dp);
+
+
         Notification.Action replyAction =
                 new Notification.Action.Builder(
                         icon,

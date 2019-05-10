@@ -13,8 +13,8 @@ import oscar.gmail.com.causality.answer.Answer;
 
 
 public class NotificationReceiver extends IntentService {
-
     private final String TAG = "causalityapp";
+
     private static String KEY_TEXT_REPLY = "key_text_reply";
 
     public NotificationReceiver() {
@@ -24,12 +24,10 @@ public class NotificationReceiver extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-//        Log.i(TAG, "arrived at service_onHandleIntent");
-
         try {
             // todo: hur illa är det att min bakgrundsservice pratar direkt med databasen?
-//        AnswerRepository repo = new AnswerRepository(getApplication());
             AppDatabase db = AppDatabase.getDatabase(this);
+
 
             //todo: hur illa är det att jag exponerar questionId´t?
             // kan ett alternativ vara att jag tar reda på qId genom qText och sen ser till att två frågor inte får ha samma text?

@@ -60,7 +60,6 @@ public class QuestionListFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +67,6 @@ public class QuestionListFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
     }
 
     @Override
@@ -88,12 +86,7 @@ public class QuestionListFragment extends Fragment {
             }
                 questionViewModel = ((MainActivity) getActivity()).getModel();
                 upToDateListOfQuestions = questionViewModel.getQuestions();
-
-
-
             recyclerView.setAdapter(new QuestionRecyclerViewAdapter(upToDateListOfQuestions, mListener));
-
-
         }
         return view;
     }
@@ -114,10 +107,6 @@ public class QuestionListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public void setModel(QuestionViewModel questionViewModel) {
-        this.questionViewModel = questionViewModel;
     }
 
     /**

@@ -6,14 +6,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import oscar.gmail.com.causality.answer.Answer;
-import oscar.gmail.com.causality.answer.AnswerDao;
-import oscar.gmail.com.causality.question.Question;
-import oscar.gmail.com.causality.question.QuestionDao;
+import oscar.gmail.com.causality.repository.Answer;
+import oscar.gmail.com.causality.repository.AnswerDao;
+import oscar.gmail.com.causality.repository.Question;
+import oscar.gmail.com.causality.repository.QuestionDao;
 
 
 @Database(entities = {Question.class, Answer.class}, version = 6, exportSchema = false)

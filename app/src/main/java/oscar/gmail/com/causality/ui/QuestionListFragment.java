@@ -4,14 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +15,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.question.Question;
-import oscar.gmail.com.causality.question.QuestionRecyclerViewAdapter;
-import oscar.gmail.com.causality.question.QuestionViewModel;
+import oscar.gmail.com.causality.repository.Question;
+import oscar.gmail.com.causality.models.QuestionViewModel;
 
 /**
  * A fragment representing a list of Items.

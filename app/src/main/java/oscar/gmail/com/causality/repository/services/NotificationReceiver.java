@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.services;
+package oscar.gmail.com.causality.repository.services;
 
 import android.app.IntentService;
 import android.app.RemoteInput;
@@ -9,7 +9,7 @@ import androidx.core.app.NotificationManagerCompat;
 import android.util.Log;
 
 import oscar.gmail.com.causality.AppDatabase;
-import oscar.gmail.com.causality.answer.Answer;
+import oscar.gmail.com.causality.repository.Answer;
 
 
 public class NotificationReceiver extends IntentService {

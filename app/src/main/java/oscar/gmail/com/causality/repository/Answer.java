@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.answer;
+package oscar.gmail.com.causality.repository;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -8,8 +8,6 @@ import androidx.room.PrimaryKey;
 import androidx.annotation.NonNull;
 
 import java.util.UUID;
-
-import oscar.gmail.com.causality.question.Question;
 
 
 @Entity(tableName = "answer_table",

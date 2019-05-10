@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.answer;
+package oscar.gmail.com.causality.models;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData;
 import android.util.Log;
 
 import java.util.List;
+
+import oscar.gmail.com.causality.repository.AnswerRepository;
+import oscar.gmail.com.causality.repository.Answer;
 
 public class AnswerViewModel extends AndroidViewModel {
 

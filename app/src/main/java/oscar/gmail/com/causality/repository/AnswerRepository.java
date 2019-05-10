@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.answer;
+package oscar.gmail.com.causality.repository;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
@@ -7,7 +7,9 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import oscar.gmail.com.causality.AppDatabase;
-import oscar.gmail.com.causality.question.Question;
+import oscar.gmail.com.causality.repository.Answer;
+import oscar.gmail.com.causality.repository.AnswerDao;
+import oscar.gmail.com.causality.repository.Question;
 
 public class AnswerRepository {
 

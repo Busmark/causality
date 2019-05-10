@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.question;
+package oscar.gmail.com.causality.models;
 
 import android.app.Application;
 import android.app.job.JobInfo;
@@ -7,33 +7,21 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
 
-import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.answer.Answer;
-import oscar.gmail.com.causality.answer.AnswerRepository;
-import oscar.gmail.com.causality.services.AlarmJobService;
-import oscar.gmail.com.causality.ui.MainActivity;
-import oscar.gmail.com.causality.ui.NewQuestionFragment;
-import oscar.gmail.com.causality.ui.QuestionListFragment;
+import oscar.gmail.com.causality.repository.AnswerRepository;
+import oscar.gmail.com.causality.repository.Question;
+import oscar.gmail.com.causality.repository.QuestionRepository;
+import oscar.gmail.com.causality.repository.services.AlarmJobService;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 public class QuestionViewModel extends AndroidViewModel {
     private final String TAG = "causalityapp";
-
 
     private QuestionRepository questionRepository;
     private AnswerRepository answerRepository;
@@ -41,27 +29,19 @@ public class QuestionViewModel extends AndroidViewModel {
     //handles feedback from saving a Question
     private LiveData<Integer> insertResult;
     private LiveData<List<Question>> questionList;
-    private List<Question> q;
-
+    private List<Question> questions;
+    private Question questionforAnswers;
 
     public QuestionViewModel(Application application) {
         super(application);
         questionRepository = new QuestionRepository(application);
         this.insertResult = questionRepository.getInsertResult();
         this.questionList = questionRepository.getQuestionList();
-
-
-        questionRepository.getQuestionList().observeForever(new Observer<List<Question>>() {
-            @Override
-            public void onChanged(List<Question> questions) {
-                q = questions;
-            }
-        });
+        questionRepository.getQuestionList().observeForever(questions -> this.questions = questions);
     }
 
-
     public List<Question> getQuestions() {
-        return q;
+        return questions;
     }
 
     public String insert(Question question) {
@@ -76,6 +56,14 @@ public class QuestionViewModel extends AndroidViewModel {
 
     public LiveData<List<Question>> getQuestionList() {
         return questionList;
+    }
+
+    public Question getQuestionforAnswers() {
+        return questionforAnswers;
+    }
+
+    public void setQuestionforAnswers(Question questionforAnswers) {
+        this.questionforAnswers = questionforAnswers;
     }
 
     public void saveQuestion(Context context, String text, String notification_time, String notification_reps) {
@@ -119,5 +107,43 @@ public class QuestionViewModel extends AndroidViewModel {
             Log.i(TAG, "Main: Job Scheduling failed");
         }
     }
+
+
+//    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.
+//    public void printAllAnswers(View view) {
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        String[] texts = mQuestionViewModel.getQuestionTextArray();
+//
+//        builder.setTitle("Välj och klicka OK")
+//                .setSingleChoiceItems(texts, checked, (dialog, which) -> {
+//                    checked = which;
+//                    buttonText = texts[checked];
+//                })
+//                .setPositiveButton("Ok", (dialog, id) -> {
+//                    // när jag klickar ok vill jag ha alla answer som hör till den frågan.
+//
+////                    String pickedQuestionId = mQuestionViewModel.getQuestionId(checked);
+//                    String pickedQuestionId = upToDateListOfQuestions.get(checked).getId();
+////                    mAnswerViewModel.printAllAnswers(pickedQuestionId);
+//
+//                    upToDateListOfAnswers.forEach(answer -> {
+//                        if (answer.getFkQuestionId().equals(pickedQuestionId)) {
+//                            Log.i(TAG, answer.getAnswerText());
+//                        }
+//                    });
+//
+//                })
+//                .setNegativeButton("Cancel", (dialog, id) -> {
+//
+//                });
+//        AlertDialog temp = builder.create();
+//
+//        //todo: behövs denna?
+//        temp.setOnDismissListener(dialog -> Log.i(TAG, "what?" + getButtonText()));
+//        builder.show();
+//
+//    }
 }
 

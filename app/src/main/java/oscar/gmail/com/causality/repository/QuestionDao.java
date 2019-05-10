@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.question;
+package oscar.gmail.com.causality.repository;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

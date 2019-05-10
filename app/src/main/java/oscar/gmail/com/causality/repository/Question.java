@@ -1,4 +1,4 @@
-package oscar.gmail.com.causality.question;
+package oscar.gmail.com.causality.repository;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

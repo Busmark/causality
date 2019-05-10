@@ -1,11 +1,9 @@
-package oscar.gmail.com.causality.question;
+package oscar.gmail.com.causality.repository;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class QuestionRepository {
     private MutableLiveData<Integer> insertResult = new MutableLiveData<>();
     private LiveData<List<Question>> questionList;
 
-    QuestionRepository(Application application) {
+    public QuestionRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mQuestionDao = db.questionDao();
         questionList = mQuestionDao.getAlphabetizedQuestions();

@@ -44,8 +44,6 @@ So, we are leaving the template code in. -->
             app:popupTheme="@style/AppTheme.PopupOverlay"
             android:text="@string/app_name" />
 
-
-
             <Button
                 android:id="@+id/button_new_question"
                 android:layout_width="match_parent"
@@ -90,6 +88,12 @@ So, we are leaving the template code in. -->
                 android:text="View all Answers"
                 android:textColor="@color/buttonLabel"
                 />
+            <FrameLayout
+                android:id="@+id/all_answers_fragment_container"
+                android:name="oscar.gmail.com.causality.question.QuestionFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/fragment_answer_list" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

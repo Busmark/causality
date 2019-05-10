@@ -16,10 +16,8 @@ package oscar.gmail.com.causality.ui;
  * limitations under the License.
  */
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.Fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentManager;
@@ -30,25 +28,16 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-
-import java.util.List;
-
 import oscar.gmail.com.causality.R;
 
-import oscar.gmail.com.causality.question.Question;
-import oscar.gmail.com.causality.question.QuestionViewModel;
+import oscar.gmail.com.causality.repository.Question;
+import oscar.gmail.com.causality.models.QuestionViewModel;
 
 
 public class MainActivity extends AppCompatActivity implements QuestionListFragment.OnListFragmentInteractionListener {
     private final String TAG = "causalityapp";
 
     private QuestionViewModel questionViewModel;
-    private List<Question> upToDateListOfQuestions;
-
-    private Button newQuestionButton;
-    private Button viewAllQuestionsButton;
-    private Button viewAllAnswersButton;
 
     private final String NEW_QUESTION_BUTTON_TEXT = "New Question";
     private final String VIEW_ALL_QUESTIONS_BUTTON_TEXT = "View all Questions";
@@ -69,52 +58,27 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //todo. Varje gång jag tiltar telefonen skapas en ny activity
-
-        newQuestionButton = findViewById(R.id.button_new_question);
-        viewAllQuestionsButton = findViewById(R.id.button_view_questions);
-        viewAllAnswersButton = findViewById(R.id.button_view_answers);
+        questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
 
         if (savedInstanceState != null) {
             numberOfDisplayedFragments = savedInstanceState.getInt(NUMBER_OF_DISPLAYED_FRAGMENTS);
             displayedFragment = savedInstanceState.getString(DISPLAYED_FRAGMENT);
-
-            // a fragment is displayed load it?
-            if (numberOfDisplayedFragments > 0) {
-                // do stuff
-            }
+//            if (numberOfDisplayedFragments > 0) {
+//                // do stuff
+//            }
         }
-
-
-        questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
-        questionViewModel.getQuestionList().observe(this, new Observer<List<Question>>() {
-
-            @Override
-            public void onChanged(List<Question> questions) {
-                upToDateListOfQuestions = questions;
-            }
-        });
-
-
     }
-
-
 
     //Add the following method to MainActivity to save the state of the Fragment if the configuration changes:
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the state of the fragment (true=open, false=closed).
         savedInstanceState.putInt(NUMBER_OF_DISPLAYED_FRAGMENTS, numberOfDisplayedFragments);
         savedInstanceState.putString(DISPLAYED_FRAGMENT, displayedFragment);
         super.onSaveInstanceState(savedInstanceState);
     }
 
-
-
     public QuestionViewModel getModel() {
         return questionViewModel;
     }
-
 
     public void mainButtonClicked(View view) {
         Button pressedButton = (Button) view;
@@ -175,49 +139,20 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         }
     }
 
+
+    //todo: När denna kommer in har användaren klickat på en Question.
+    // då ska denna question sparas ner till viewModellen för att sedan ligga till grund för
+    // att hämta alla Answer som hör till Question. Dessa ska recyclas i en View så att de dyker upp under
+    // ViewAllAnswers.
+    //Då kan ju den knappen vara inaktiverad...
     @Override
     public void onListFragmentInteraction(Question item) {
+        questionViewModel.setQuestionforAnswers(item);
     }
 
 
 
 
-//    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.
-//    public void printAllAnswers(View view) {
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//        String[] texts = mQuestionViewModel.getQuestionTextArray();
-//
-//        builder.setTitle("Välj och klicka OK")
-//                .setSingleChoiceItems(texts, checked, (dialog, which) -> {
-//                    checked = which;
-//                    buttonText = texts[checked];
-//                })
-//                .setPositiveButton("Ok", (dialog, id) -> {
-//                    // när jag klickar ok vill jag ha alla answer som hör till den frågan.
-//
-////                    String pickedQuestionId = mQuestionViewModel.getQuestionId(checked);
-//                    String pickedQuestionId = upToDateListOfQuestions.get(checked).getId();
-////                    mAnswerViewModel.printAllAnswers(pickedQuestionId);
-//
-//                    upToDateListOfAnswers.forEach(answer -> {
-//                        if (answer.getFkQuestionId().equals(pickedQuestionId)) {
-//                            Log.i(TAG, answer.getAnswerText());
-//                        }
-//                    });
-//
-//                })
-//                .setNegativeButton("Cancel", (dialog, id) -> {
-//
-//                });
-//        AlertDialog temp = builder.create();
-//
-//        //todo: behövs denna?
-//        temp.setOnDismissListener(dialog -> Log.i(TAG, "what?" + getButtonText()));
-//        builder.show();
-//
-//    }
 
 
 

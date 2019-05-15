@@ -25,7 +25,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import oscar.gmail.com.causality.R;
@@ -43,13 +42,12 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
     private final String VIEW_ALL_QUESTIONS_BUTTON_TEXT = "View all Questions";
     private final String VIEW_ALL_ANSWERS_BUTTON_TEXT = "View all Answers";
 
-    //if a fragment is displayed numberOfDisplayedFragments>0
     private final String NUMBER_OF_DISPLAYED_FRAGMENTS = "numberOfDisplayedFragments";
     private int numberOfDisplayedFragments = 0;
 
-    //if a fragment is displayed !displayedFragment = ""
     private final String DISPLAYED_FRAGMENT = "displayed_fragment";
     private String displayedFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         if (savedInstanceState != null) {
             numberOfDisplayedFragments = savedInstanceState.getInt(NUMBER_OF_DISPLAYED_FRAGMENTS);
             displayedFragment = savedInstanceState.getString(DISPLAYED_FRAGMENT);
-//            if (numberOfDisplayedFragments > 0) {
-//                // do stuff
-//            }
         }
     }
 
-    //Add the following method to MainActivity to save the state of the Fragment if the configuration changes:
+    /**
+     * Saving the fragment state when configuration changes.
+     * @param savedInstanceState
+     */
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt(NUMBER_OF_DISPLAYED_FRAGMENTS, numberOfDisplayedFragments);
         savedInstanceState.putString(DISPLAYED_FRAGMENT, displayedFragment);
@@ -80,10 +78,15 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         return questionViewModel;
     }
 
+    /**
+     * Triggers when either of the main page button is clicked. Expands the page with dialog for that page.
+     * numberOfDisplayedFragments 0 = no fragment displayed, 1 = a fragment is displayed
+     *
+     * @param view
+     */
     public void mainButtonClicked(View view) {
         Button pressedButton = (Button) view;
-        // numberOfDisplayedFragments 0 = no fragment displayed
-        // numberOfDisplayedFragments 1 = a fragment is displayed
+
         switch (numberOfDisplayedFragments) {
             case 0:
                 openFragment(pressedButton.getText().toString());
@@ -92,17 +95,17 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
                 closeFragment();
                 // same buttonPressed as displayedFragment
                 if (pressedButton.getText().toString().equals(displayedFragment)) {
-                    clearFragmentMembers();
+                    clearMainActivityMembers();
                 }
                 else {
-                    clearFragmentMembers();
+                    clearMainActivityMembers();
                     mainButtonClicked(view);
                 }
                 break;
             }
         }
 
-    public void clearFragmentMembers() {
+    public void clearMainActivityMembers() {
         numberOfDisplayedFragments = 0;
         displayedFragment = "";
     }
@@ -114,6 +117,10 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         }
     }
 
+    /**
+     * Opens the main page corresponding fragment.
+     * @param pressedButton
+     */
     public void openFragment(String pressedButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -133,18 +140,18 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
                 numberOfDisplayedFragments = 1;
                 break;
 
+                //under development
             case VIEW_ALL_ANSWERS_BUTTON_TEXT:
                 displayedFragment = VIEW_ALL_ANSWERS_BUTTON_TEXT;
                 break;
         }
     }
 
-
+    //under development
     //todo: När denna kommer in har användaren klickat på en Question.
     // då ska denna question sparas ner till viewModellen för att sedan ligga till grund för
     // att hämta alla Answer som hör till Question. Dessa ska recyclas i en View så att de dyker upp under
     // ViewAllAnswers.
-    //Då kan ju den knappen vara inaktiverad...
     @Override
     public void onListFragmentInteraction(Question item) {
         questionViewModel.setQuestionforAnswers(item);

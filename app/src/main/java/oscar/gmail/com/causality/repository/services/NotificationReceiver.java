@@ -21,6 +21,10 @@ public class NotificationReceiver extends IntentService {
         super("NotificationReceiver");
     }
 
+    /**
+     *
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 

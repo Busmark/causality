@@ -9,11 +9,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
+import android.util.Log;
 import androidx.core.content.ContextCompat;
 
 import oscar.gmail.com.causality.R;
 
+import java.util.Random;
+
 public class NotificationNotifier {
+    private final String TAG = "causalityapp";
 
     private Context mainActivityContext;
     private NotificationManager notificationManager;
@@ -29,10 +33,17 @@ public class NotificationNotifier {
                         mainActivityContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         createNotificationChannel(channelID,
-                "DirectReply News", "Example News Channel");
+                "Causality alarm", "Causality Channel");
     }
 
+    /**
+     *
+     * @param id
+     * @param name
+     * @param description
+     */
     protected void createNotificationChannel(String id, String name, String description) {
+
 
         int importance = NotificationManager.IMPORTANCE_HIGH;
 
@@ -49,6 +60,11 @@ public class NotificationNotifier {
         notificationManager.createNotificationChannel(channel);
     }
 
+    /**
+     *
+     * @param questionText
+     * @param questionId
+     */
     public void sendNotification(String questionText, String questionId) {
         String replyLabel = "Enter your answer here";
         RemoteInput remoteInput =
@@ -72,7 +88,6 @@ public class NotificationNotifier {
                 Icon.createWithResource(mainActivityContext,
                         R.drawable.ic_add_black_24dp);
 
-
         Notification.Action replyAction =
                 new Notification.Action.Builder(
                         icon,
@@ -86,14 +101,19 @@ public class NotificationNotifier {
                                 R.color.colorPrimary))
                         .setSmallIcon(
                                 android.R.drawable.ic_dialog_info)
-                        .setContentTitle("My Notification")             //todo: Ska stå Causality
-                        .setContentText(questionText)       //todo: Ska stå Question-text
+                        .setContentTitle("This is your daily question:")
+                        .setContentText(questionText)
+                        .setAutoCancel(true)
+                        .setOngoing(false)
                         .addAction(replyAction).build();
 
-        //todo; varför skapar vi upp en ny? KAn vi inte använda den globala?
+        Random notification_id = new Random();
+        int temp = notification_id.nextInt(10000);
+        Log.i(TAG, "Notification notifier, random id = " + temp);
+
         NotificationManager notificationManager =
                 (NotificationManager) mainActivityContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId, newMessageNotification);
+        notificationManager.notify(temp, newMessageNotification);
     }
 
 //     //OM jag vill skicka en mottagarNotification till användaren kan jag använda detta
@@ -104,11 +124,6 @@ public class NotificationNotifier {
 //                .setSmallIcon(R.drawable.ic_add_black_24dp)
 //                .setContentText("message received")
 //                .build();
-//
-//    // Issue the new notification.
-//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mainActivityContext);
-//        notificationManager.notify(notificationId, repliedNotification);
-//        notificationManager.cancel(notificationId);
-//}
+
 
 }

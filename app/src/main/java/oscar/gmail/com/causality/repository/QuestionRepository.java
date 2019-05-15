@@ -34,6 +34,14 @@ public class QuestionRepository {
         insertAsync(question);
     }
 
+    public String getLatestSavedQuestionId(String text) {
+        return mQuestionDao.getQuestionId(text);
+    }
+
+    /**
+     *
+     * @param question
+     */
     private void insertAsync(final Question question) {
 
         new Thread(new Runnable() {
@@ -47,32 +55,5 @@ public class QuestionRepository {
                 }
             }
         }).start();
-    }
-
-
-
-
-    // You must call this on a non-UI thread or your app will crash.
-    // Like this, Room ensures that you're not doing any long running operations on the main
-    // thread, blocking the UI.
-//    public void insert(Question question) {
-////        Log.i(TAG, "id = " + question.getId());
-//        new insertAsyncTask(mQuestionDao).execute(question);
-//    }
-
-    private static class insertAsyncTask extends AsyncTask<Question, Void, Void> {
-        private final String TAG = "app";
-
-        private QuestionDao mAsyncQuestionDao;
-
-        insertAsyncTask(QuestionDao dao) {
-            mAsyncQuestionDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Question... params) {
-            mAsyncQuestionDao.insert(params[0]);
-            return null;
-        }
     }
 }

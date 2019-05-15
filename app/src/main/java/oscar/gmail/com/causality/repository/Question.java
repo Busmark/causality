@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 
 import java.util.UUID;
 
-
+/**
+ *
+ */
 @Entity(tableName = "question_table")
 public class Question {
 

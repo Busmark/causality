@@ -24,32 +24,54 @@ public class QuestionViewModel extends AndroidViewModel {
     private final String TAG = "causalityapp";
 
     private QuestionRepository questionRepository;
-    private AnswerRepository answerRepository;
+    //private AnswerRepository answerRepository;
 
     //handles feedback from saving a Question
     private LiveData<Integer> insertResult;
+    private int result;
     private LiveData<List<Question>> questionList;
     private List<Question> questions;
     private Question questionforAnswers;
 
+    /**
+     *
+     * @param application
+     */
     public QuestionViewModel(Application application) {
         super(application);
         questionRepository = new QuestionRepository(application);
-        this.insertResult = questionRepository.getInsertResult();
-        this.questionList = questionRepository.getQuestionList();
-        questionRepository.getQuestionList().observeForever(questions -> this.questions = questions);
+//        this.insertResult = questionRepository.getInsertResult();
+//        this.questionList = questionRepository.getQuestionList();
+
+        //listens to changes in database
+        questionRepository.getQuestionList().observeForever(questions -> {
+            this.questions = questions;
+        });
+
+        //listens to repo member saving success or fail from last save.
+        questionRepository.getInsertResult().observeForever(insertResult -> {
+            result = insertResult;
+        });
     }
 
     public List<Question> getQuestions() {
         return questions;
     }
 
+    /**
+     *
+     * @param question
+     * @return The new questions id.
+     */
     public String insert(Question question) {
-
         questionRepository.insert(question);
         return question.getId();
     }
 
+    /**
+     *
+     * @return An 0 or 1 depending if the insert(question) was fail or success.
+     */
     public LiveData<Integer> getInsertResult() {
         return insertResult;
     }
@@ -66,30 +88,42 @@ public class QuestionViewModel extends AndroidViewModel {
         this.questionforAnswers = questionforAnswers;
     }
 
+    /**
+     *
+     * @param context
+     * @param text
+     * @param notification_time
+     * @param notification_reps
+     */
     public void saveQuestion(Context context, String text, String notification_time, String notification_reps) {
         int reps = Integer.parseInt(notification_reps);
 
-        //vid endast 1 fråga ska notisen komma direkt.
+        // for dev purposes, to trigger instant alarm
         if(reps == 1) {
-            notification_time = "0800";
+            notification_time = "1000";
         }
-        String qID = insert(new Question(text, notification_time));
+        String questionId = insert(new Question(text, notification_time));
 
-        for(int i = 0; i < reps; i++)  {
-            scheduleJob(context, text, qID, notification_time);
-        }
+        Log.i(TAG, "jobscheduled to " + notification_time);
+            //todo; dessa jobb är identiska... Då blir väl intentet likadant?
+            scheduleJob(context, text, questionId, notification_time, reps);
+
     }
 
-    //används för att skapa X alarm
-    public void scheduleJob(Context context, String questionText, String questionId, String alarm) {
-
-        Log.i(TAG, "alarm = " + alarm);
-
+    /**
+     * Service outside main thread that creates X alarms.
+     * @param context
+     * @param questionText  The question to be put in Notification.
+     * @param questionId    Identifier to save to correct question.
+     * @param alarm         Identifier for when alarm should go off.
+     */
+    public void scheduleJob(Context context, String questionText, String questionId, String alarm, int repetitions) {
 
         PersistableBundle stringsToBeAdded = new PersistableBundle();
         stringsToBeAdded.putString("text", questionText);
         stringsToBeAdded.putString("id", questionId);
         stringsToBeAdded.putString("alarm", alarm);
+        stringsToBeAdded.putInt("repetitions", repetitions);
 
         ComponentName componentName = new ComponentName(context, AlarmJobService.class);
         JobInfo info = new JobInfo.Builder(Integer.parseInt(alarm), componentName)
@@ -102,48 +136,10 @@ public class QuestionViewModel extends AndroidViewModel {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         int resultCode = jobScheduler.schedule(info);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.i(TAG, "Main: Job Scheduled success");
+            Log.i(TAG, "Model: Job Scheduled success");
         } else {
-            Log.i(TAG, "Main: Job Scheduling failed");
+            Log.i(TAG, "Model: Job Scheduling failed");
         }
     }
-
-
-//    //todo: för att se vilken fråga jag har vill ha svaret på behöver jag lista alla questions igen. Som jag gör på Order Notification.
-//    public void printAllAnswers(View view) {
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//        String[] texts = mQuestionViewModel.getQuestionTextArray();
-//
-//        builder.setTitle("Välj och klicka OK")
-//                .setSingleChoiceItems(texts, checked, (dialog, which) -> {
-//                    checked = which;
-//                    buttonText = texts[checked];
-//                })
-//                .setPositiveButton("Ok", (dialog, id) -> {
-//                    // när jag klickar ok vill jag ha alla answer som hör till den frågan.
-//
-////                    String pickedQuestionId = mQuestionViewModel.getQuestionId(checked);
-//                    String pickedQuestionId = upToDateListOfQuestions.get(checked).getId();
-////                    mAnswerViewModel.printAllAnswers(pickedQuestionId);
-//
-//                    upToDateListOfAnswers.forEach(answer -> {
-//                        if (answer.getFkQuestionId().equals(pickedQuestionId)) {
-//                            Log.i(TAG, answer.getAnswerText());
-//                        }
-//                    });
-//
-//                })
-//                .setNegativeButton("Cancel", (dialog, id) -> {
-//
-//                });
-//        AlertDialog temp = builder.create();
-//
-//        //todo: behövs denna?
-//        temp.setOnDismissListener(dialog -> Log.i(TAG, "what?" + getButtonText()));
-//        builder.show();
-//
-//    }
 }
 

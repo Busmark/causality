@@ -11,10 +11,13 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 public class AlarmJobService extends JobService {
     private final String TAG = "causalityapp";
     private boolean jobCancelled = false;
+
 
     @Override
     public boolean onStartJob(JobParameters params) {
@@ -26,52 +29,82 @@ public class AlarmJobService extends JobService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //todo: gör om så att requestCode blir något annat än tiden för notifikationen
-                int requestCodeForPendingIntent = params.getJobId();
                 PersistableBundle bundle = params.getExtras();
-                String questionText = (String) bundle.get("text");
-                String questionId = (String) bundle.get("id");
-                String alarmTime = (String) bundle.get("alarm"); // tappas 0 i 0800 här?
+                String questionText =  bundle.getString("text");
+                String questionId =  bundle.getString("id");
+                String alarmTime = bundle.getString("alarm");      // typ 1115
+                int repetitions = bundle.getInt("repetitions"); // typ 7
 
-//                String all = Integer.toString(requestCodeForPendingIntent);
-
-                String hour = alarmTime.substring(0,2);
-                String mins = alarmTime.substring(2,4);
-
+                int requestCodeForPendingIntent = params.getJobId();
+                Log.i(TAG, "AlarmJobService, jobId() is: " + params.getJobId());
+                String hour = alarmTime.substring(0,2); // 11
+                String mins = alarmTime.substring(2,4); // 15
                 int h = Integer.parseInt(hour);
                 int m = Integer.parseInt(mins);
 
-                // Calendar
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmm");
                 Calendar calendar = Calendar.getInstance();
-                @SuppressLint("SimpleDateFormat") int minutes = Integer.parseInt(new SimpleDateFormat("mm").format(calendar.getTime()));
-                @SuppressLint("SimpleDateFormat") int hours = Integer.parseInt(new SimpleDateFormat("HH").format(calendar.getTime()));
+                Date currentDate = new Date();
+                calendar.setTime(currentDate);
+
                 calendar.set(Calendar.HOUR_OF_DAY, h);
                 calendar.set(Calendar.MINUTE, m);
 
 
-                // intent
-                Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                intent.putExtra("text", questionText);
-                intent.putExtra("id", questionId);
-
-                intent.setAction("MY_NOTIFICATION_MESSAGE");
-
-                // pendingIntent
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestCodeForPendingIntent, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                // AlarmManager
-                AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-                //todo: RTC_WAKEUP is for dev.purpose. Change to RTC at prod.
-                am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                Log.i(TAG, "Today is: " + dateFormat.format(currentDate));
 
 
-                Log.i(TAG, "AlarmJobService thread: Job finished");
-                jobFinished(params, false);
+                //första varvet ska jag inte lägga på en dag
+                int dayToAdd = 0;
+
+                for (int i = 0; i < repetitions; i++) {
+                    Log.i(TAG, "dayToAdd = " + dayToAdd);
+                    if (dayToAdd != 0) {
+                        calendar.add(Calendar.DATE, 1);
+                    }
+                    else {
+                        calendar.add(Calendar.DATE, 0);
+                        dayToAdd++;
+                    }
+
+                    Date currentDatePlusRepetions = calendar.getTime();
+
+                    Log.i(TAG, "Alarm is for: " + dateFormat.format(currentDatePlusRepetions));
+
+                    // intent
+                    Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+                    intent.putExtra("text", questionText);
+                    intent.putExtra("id", questionId);
+
+                    intent.setAction("MY_NOTIFICATION_MESSAGE");
+
+                    Random notification_id = new Random();
+                    int temp = notification_id.nextInt(10000);
+                    Log.i(TAG, "AlarmJobService, random id = " + temp);
+
+                    // pendingIntent
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), temp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    // AlarmManager
+                    AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    //todo: RTC_WAKEUP is for dev.purpose. Change to RTC at prod.
+                    am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+                    Log.i(TAG, "AlarmJobService thread: Job finished");
+                    jobFinished(params, false);
+
+                    am.getNextAlarmClock();
+
+                }
             }
         }).start();
     }
 
-
+    /**
+     *
+     * @param params
+     * @return
+     */
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.i(TAG, "job was cancelled");

@@ -14,7 +14,9 @@ import oscar.gmail.com.causality.repository.AnswerDao;
 import oscar.gmail.com.causality.repository.Question;
 import oscar.gmail.com.causality.repository.QuestionDao;
 
-
+/**
+ *
+ */
 @Database(entities = {Question.class, Answer.class}, version = 6, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -69,11 +71,20 @@ public abstract class AppDatabase extends RoomDatabase {
         private final QuestionDao questionDao;
         private final AnswerDao answerDao;
 
+        /**
+         *
+         * @param db
+         */
         PopulateDbAsync(AppDatabase db) {
             questionDao = db.questionDao();
             answerDao = db.answerDao();
         }
 
+        /**
+         *
+         * @param params
+         * @return
+         */
         @Override
         protected Void doInBackground(final Void... params) {
             // Start the app with a clean AppDatabase every time.

@@ -2,6 +2,7 @@ package oscar.gmail.com.causality.ui;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import androidx.fragment.app.Fragment;
 
 import androidx.annotation.Nullable;
@@ -28,8 +29,13 @@ public class NewQuestionFragment extends Fragment implements View.OnClickListene
 
     private QuestionViewModel questionViewModel;
 
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
     public NewQuestionFragment() {
     }
+
 
     @Nullable
     @Override
@@ -42,15 +48,18 @@ public class NewQuestionFragment extends Fragment implements View.OnClickListene
         createQuestionEditText = rootView.findViewById(R.id.new_question_text);
 
         questionViewModel = ((MainActivity) getActivity()).getModel();
+
         return rootView;
     }
 
-
-    public static NewQuestionFragment newInstance() {
+      public static NewQuestionFragment newInstance() {
         return new NewQuestionFragment();
     }
 
-    //save button
+    /**
+     * Triggers when the fragments save button is clicked.
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         {
@@ -65,10 +74,9 @@ public class NewQuestionFragment extends Fragment implements View.OnClickListene
             questionViewModel.saveQuestion(getActivity().getApplicationContext(), newQuestionText, notification_time, notification_reps);
             }
         }
-        //todo: tightCoupling? Ska jag ändra till att anropa ett interface med samma metoder i som MainActivity har?
-        ((MainActivity) getActivity()).clearFragmentMembers();
+        //todo: möjlig tightCoupling här. Ska jag ändra till att anropa ett interface med samma metoder i som MainActivity har?
+        ((MainActivity) getActivity()).clearMainActivityMembers();
 
-        //todo: om objektet är sparat till db´n kan fragmentet stängas ner
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 }

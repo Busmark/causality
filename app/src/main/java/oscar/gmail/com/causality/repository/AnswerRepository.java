@@ -27,6 +27,10 @@ public class AnswerRepository {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
+    /**
+     *
+     * @return
+     */
     public LiveData<List<Answer>> getAllAnswers() {
         return allAnswers;
     }
@@ -34,6 +38,10 @@ public class AnswerRepository {
     // You must call this on a non-UI thread or your app will crash.
     // Like this, Room ensures that you're not doing any long running operations on the main
     // thread, blocking the UI.
+    /**
+     *
+     * @param answer
+     */
     public void insert(Answer answer) {
         new insertAsyncTask(answerDao).execute(answer);
     }

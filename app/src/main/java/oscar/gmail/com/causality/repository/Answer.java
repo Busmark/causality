@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 
 import java.util.UUID;
 
-
+/**
+ *
+ */
 @Entity(tableName = "answer_table",
         foreignKeys = {
                         @ForeignKey(entity = Question.class,
@@ -31,6 +33,11 @@ public class Answer {
     @ColumnInfo(name = "answer_text")
     private String answerText;
 
+    /**
+     *
+     * @param fkQuestionId
+     * @param answerText
+     */
     public Answer(@NonNull String fkQuestionId, String answerText) {
         this.id = UUID.randomUUID().toString();
         this.fkQuestionId = fkQuestionId;

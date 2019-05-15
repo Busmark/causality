@@ -17,20 +17,36 @@ public class AnswerViewModel extends AndroidViewModel {
     private AnswerRepository mRepository;
     private LiveData<List<Answer>> mAllAnswers;
 
+    /**
+     *
+     * @param application
+     */
     public AnswerViewModel(Application application) {
         super(application);
         mRepository = new AnswerRepository(application);
         mAllAnswers = mRepository.getAllAnswers();
     }
 
+    /**
+     *
+     * @return
+     */
     public LiveData<List<Answer>> getAllAnswers() {
         return mAllAnswers;
     }
 
+    /**
+     *
+     * @param answer
+     */
     public void insert(Answer answer) {
         mRepository.insert(answer);
     }
 
+    /**
+     *
+     * @param pickedQuestionId
+     */
     public void printAllAnswers(String pickedQuestionId) {
         mAllAnswers.getValue().forEach(answer -> {
             if (answer.getFkQuestionId().equals(pickedQuestionId)) {

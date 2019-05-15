@@ -20,8 +20,8 @@ public interface QuestionDao {
     @Query("DELETE FROM question_table")
     void deleteAll();
 
-    @Query("DELETE FROM question_table")
-    void deleteQuestion();
+//    @Query("DELETE FROM question_table")
+//    void deleteQuestion();
 
     @Query("SELECT question_id FROM question_table where question_text LIKE :question_text")
     String getQuestionId(String question_text);

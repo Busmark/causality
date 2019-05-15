@@ -8,12 +8,10 @@ import android.content.Context;
 import android.os.PersistableBundle;
 import android.util.Log;
 
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-
 import java.util.List;
 
-import oscar.gmail.com.causality.repository.AnswerRepository;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import oscar.gmail.com.causality.repository.Question;
 import oscar.gmail.com.causality.repository.QuestionRepository;
 import oscar.gmail.com.causality.repository.services.AlarmJobService;
@@ -31,7 +29,6 @@ public class QuestionViewModel extends AndroidViewModel {
     private int result;
     private LiveData<List<Question>> questionList;
     private List<Question> questions;
-    private Question questionforAnswers;
 
     /**
      *
@@ -80,13 +77,6 @@ public class QuestionViewModel extends AndroidViewModel {
         return questionList;
     }
 
-    public Question getQuestionforAnswers() {
-        return questionforAnswers;
-    }
-
-    public void setQuestionforAnswers(Question questionforAnswers) {
-        this.questionforAnswers = questionforAnswers;
-    }
 
     /**
      *
@@ -104,9 +94,7 @@ public class QuestionViewModel extends AndroidViewModel {
         }
         String questionId = insert(new Question(text, notification_time));
 
-        Log.i(TAG, "jobscheduled to " + notification_time);
-            //todo; dessa jobb är identiska... Då blir väl intentet likadant?
-            scheduleJob(context, text, questionId, notification_time, reps);
+        scheduleJob(context, text, questionId, notification_time, reps);
 
     }
 
@@ -136,7 +124,6 @@ public class QuestionViewModel extends AndroidViewModel {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         int resultCode = jobScheduler.schedule(info);
         if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.i(TAG, "Model: Job Scheduled success");
         } else {
             Log.i(TAG, "Model: Job Scheduling failed");
         }

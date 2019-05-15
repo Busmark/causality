@@ -1,21 +1,22 @@
 package oscar.gmail.com.causality.models;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import oscar.gmail.com.causality.repository.AnswerRepository;
+import androidx.lifecycle.AndroidViewModel;
 import oscar.gmail.com.causality.repository.Answer;
+import oscar.gmail.com.causality.repository.AnswerRepository;
+import oscar.gmail.com.causality.repository.Question;
 
 public class AnswerViewModel extends AndroidViewModel {
 
     private final String TAG = "causalityapp";
 
-    private AnswerRepository mRepository;
-    private LiveData<List<Answer>> mAllAnswers;
+    private AnswerRepository answerRepository;
+    private List<Answer> answers;
+    private Question tempQuestion;
 
     /**
      *
@@ -23,16 +24,41 @@ public class AnswerViewModel extends AndroidViewModel {
      */
     public AnswerViewModel(Application application) {
         super(application);
-        mRepository = new AnswerRepository(application);
-        mAllAnswers = mRepository.getAllAnswers();
+        answerRepository = new AnswerRepository(application);
+        //answers = answerRepository.getAllAnswers();
+
+        answerRepository.getAllAnswers().observeForever(answers -> {
+            this.answers = answers;
+        });
+
     }
 
     /**
      *
      * @return
      */
-    public LiveData<List<Answer>> getAllAnswers() {
-        return mAllAnswers;
+    public List<Answer> getAllAnswers() {
+        return answers;
+    }
+
+    public Question getTempQuestion() {
+        return tempQuestion;
+    }
+
+    public void setTempQuestion(Question tempQuestion) {
+        this.tempQuestion = tempQuestion;
+    }
+
+    public List<Answer> getAllAnswersForAQuestion(String questionId) {
+        List<Answer> toBeReturned = new ArrayList<>();
+
+        getAllAnswers().forEach(answer -> {
+            if (answer.getFkQuestionId().equals(questionId)) {
+                toBeReturned.add(answer);
+            }
+        });
+      return toBeReturned;
+
     }
 
     /**
@@ -40,18 +66,7 @@ public class AnswerViewModel extends AndroidViewModel {
      * @param answer
      */
     public void insert(Answer answer) {
-        mRepository.insert(answer);
+        answerRepository.insert(answer);
     }
 
-    /**
-     *
-     * @param pickedQuestionId
-     */
-    public void printAllAnswers(String pickedQuestionId) {
-        mAllAnswers.getValue().forEach(answer -> {
-            if (answer.getFkQuestionId().equals(pickedQuestionId)) {
-                Log.i(TAG, answer.getAnswerText());
-            }
-        });
-    }
 }

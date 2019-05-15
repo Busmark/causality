@@ -2,11 +2,6 @@ package oscar.gmail.com.causality.ui;
 
 
 import android.os.Bundle;
-import android.util.Log;
-import androidx.fragment.app.Fragment;
-
-import androidx.annotation.Nullable;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.models.QuestionViewModel;
 
@@ -47,7 +44,7 @@ public class NewQuestionFragment extends Fragment implements View.OnClickListene
         save_button.setOnClickListener(this);
         createQuestionEditText = rootView.findViewById(R.id.new_question_text);
 
-        questionViewModel = ((MainActivity) getActivity()).getModel();
+        questionViewModel = ((MainActivity) getActivity()).getQuestionViewModel();
 
         return rootView;
     }

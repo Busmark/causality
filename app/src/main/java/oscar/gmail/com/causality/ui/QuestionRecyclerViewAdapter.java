@@ -1,18 +1,16 @@
 package oscar.gmail.com.causality.ui;
 
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 import oscar.gmail.com.causality.R;
 import oscar.gmail.com.causality.repository.Question;
 import oscar.gmail.com.causality.ui.QuestionListFragment.OnListFragmentInteractionListener;
-
-import java.util.List;
 
 
 public class QuestionRecyclerViewAdapter extends RecyclerView.Adapter<QuestionRecyclerViewAdapter.ViewHolder> {
@@ -57,8 +55,10 @@ public class QuestionRecyclerViewAdapter extends RecyclerView.Adapter<QuestionRe
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                Log.i(TAG, "A question has been clicked upon = ");
                 mListener.onListFragmentInteraction(holder.mItem);
+
+
+
             }
         });
     }

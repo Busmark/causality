@@ -9,12 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import android.util.Log;
-import androidx.core.content.ContextCompat;
-
-import oscar.gmail.com.causality.R;
 
 import java.util.Random;
+
+import androidx.core.content.ContextCompat;
+import oscar.gmail.com.causality.R;
 
 public class NotificationNotifier {
     private final String TAG = "causalityapp";
@@ -22,11 +21,10 @@ public class NotificationNotifier {
     private Context mainActivityContext;
     private NotificationManager notificationManager;
     private String channelID = "oscar.gmail.com.causality";
-    private static int notificationId = 102;
     private static String KEY_TEXT_REPLY = "key_text_reply";
 
 
-    public NotificationNotifier(Context context) {
+    public NotificationNotifier(Context context, String questionText, String questionId) {
         this.mainActivityContext = context;
         notificationManager =
                 (NotificationManager)
@@ -34,6 +32,8 @@ public class NotificationNotifier {
 
         createNotificationChannel(channelID,
                 "Causality alarm", "Causality Channel");
+
+        sendNotification(questionText, questionId);
     }
 
     /**
@@ -43,7 +43,6 @@ public class NotificationNotifier {
      * @param description
      */
     protected void createNotificationChannel(String id, String name, String description) {
-
 
         int importance = NotificationManager.IMPORTANCE_HIGH;
 
@@ -61,37 +60,41 @@ public class NotificationNotifier {
     }
 
     /**
-     *
-     * @param questionText
-     * @param questionId
+     * Creates Notification when AlarmReceiver detects an alarm broadcast.
+     * The variable randomNumberForNotificationId is attatched to the Intent so the
+     * receiver can shut down the corresponding notification.
+     * @param questionText  The notification question to device user.
+     * @param questionId    The questions identifier value. Needed for saving the answer.
      */
     public void sendNotification(String questionText, String questionId) {
         String replyLabel = "Enter your answer here";
-        RemoteInput remoteInput =
-                new RemoteInput.Builder(KEY_TEXT_REPLY)
-                        .setLabel(replyLabel)
-                        .build();
 
-        Intent resultIntent = new Intent(mainActivityContext, NotificationReceiver.class);
-        resultIntent.putExtra("questionText", questionText);
-        resultIntent.putExtra("questionId", questionId);
+        Intent intent = new Intent(mainActivityContext, NotificationReceiver.class);
+        Random notification_id = new Random();
+        int randomNumberForNotificationId = notification_id.nextInt(10000);
+
+        intent.putExtra("questionText", questionText);
+        intent.putExtra("questionId", questionId);
+        intent.putExtra("notificationId", randomNumberForNotificationId);
 
         PendingIntent resultPendingIntent =
                 PendingIntent.getService(
                         mainActivityContext,
-                        0,
-                        resultIntent,
+                        randomNumberForNotificationId,
+                        intent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         final Icon icon =
                 Icon.createWithResource(mainActivityContext,
                         R.drawable.ic_add_black_24dp);
+        RemoteInput remoteInput =
+                new RemoteInput.Builder(KEY_TEXT_REPLY)
+                        .setLabel(replyLabel)
+                        .build();
 
         Notification.Action replyAction =
-                new Notification.Action.Builder(
-                        icon,
-                        "Answer", resultPendingIntent)
+                new Notification.Action.Builder(icon, "Answer", resultPendingIntent)
                         .addRemoteInput(remoteInput)
                         .build();
 
@@ -103,17 +106,15 @@ public class NotificationNotifier {
                                 android.R.drawable.ic_dialog_info)
                         .setContentTitle("This is your daily question:")
                         .setContentText(questionText)
-                        .setAutoCancel(true)
-                        .setOngoing(false)
+//                        .setAutoCancel(true)
+//                        .setOngoing(false)
                         .addAction(replyAction).build();
 
-        Random notification_id = new Random();
-        int temp = notification_id.nextInt(10000);
-        Log.i(TAG, "Notification notifier, random id = " + temp);
+
 
         NotificationManager notificationManager =
                 (NotificationManager) mainActivityContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(temp, newMessageNotification);
+        notificationManager.notify(randomNumberForNotificationId, newMessageNotification);
     }
 
 //     //OM jag vill skicka en mottagarNotification till användaren kan jag använda detta

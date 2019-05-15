@@ -1,11 +1,11 @@
 package oscar.gmail.com.causality.repository;
 
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-
-import java.util.List;
 
 /**
  *
@@ -17,7 +17,7 @@ public interface AnswerDao {
     LiveData<List<Answer>> getAllAnswers();
 
     @Query("SELECT * from answer_table WHERE fk_question_id LIKE :question_id ")
-    LiveData<List<Answer>> getAllAnswerToAQuestion(String question_id);
+    List<Answer> getAllAnswersToAQuestion(String question_id);
 
     @Insert
     void insert(Answer answer);

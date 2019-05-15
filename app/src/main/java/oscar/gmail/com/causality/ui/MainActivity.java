@@ -1,42 +1,24 @@
 package oscar.gmail.com.causality.ui;
 
-/*
- * Copyright (C) 2017 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 import oscar.gmail.com.causality.R;
-
-import oscar.gmail.com.causality.repository.Question;
+import oscar.gmail.com.causality.models.AnswerViewModel;
 import oscar.gmail.com.causality.models.QuestionViewModel;
-
+import oscar.gmail.com.causality.repository.Question;
 
 public class MainActivity extends AppCompatActivity implements QuestionListFragment.OnListFragmentInteractionListener {
     private final String TAG = "causalityapp";
 
     private QuestionViewModel questionViewModel;
+    private AnswerViewModel answerViewModel;
 
     private final String NEW_QUESTION_BUTTON_TEXT = "New Question";
     private final String VIEW_ALL_QUESTIONS_BUTTON_TEXT = "View all Questions";
@@ -48,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
     private final String DISPLAYED_FRAGMENT = "displayed_fragment";
     private String displayedFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         questionViewModel = ViewModelProviders.of(this).get(QuestionViewModel.class);
+        answerViewModel = ViewModelProviders.of(this).get(AnswerViewModel.class);
 
         if (savedInstanceState != null) {
             numberOfDisplayedFragments = savedInstanceState.getInt(NUMBER_OF_DISPLAYED_FRAGMENTS);
@@ -74,9 +56,10 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public QuestionViewModel getModel() {
+    public QuestionViewModel getQuestionViewModel() {
         return questionViewModel;
     }
+    public AnswerViewModel getAnswerViewModel() { return answerViewModel; }
 
     /**
      * Triggers when either of the main page button is clicked. Expands the page with dialog for that page.
@@ -142,7 +125,11 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
 
                 //under development
             case VIEW_ALL_ANSWERS_BUTTON_TEXT:
+                AnswerListFragment answerListFragment = AnswerListFragment.newInstance(1);
+                fragmentTransaction.add(R.id.all_answers_fragment_container, answerListFragment).addToBackStack(null).commit();
                 displayedFragment = VIEW_ALL_ANSWERS_BUTTON_TEXT;
+                numberOfDisplayedFragments = 1;
+
                 break;
         }
     }
@@ -154,12 +141,26 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
     // ViewAllAnswers.
     @Override
     public void onListFragmentInteraction(Question item) {
-        questionViewModel.setQuestionforAnswers(item);
+
+        answerViewModel.setTempQuestion(item);
+
+//        List<Answer> answers = answerViewModel.getAllAnswersForAQuestion(item.getId());
+//        answers.forEach(answer -> Log.i(TAG, "Date:  " + "Answer: " + answer.getAnswerText()));
+
+
+        /*
+        När en Question har blivit klickad på vill jag stänga ner fragmentet View All Questions
+        och därefter öppna fragmemntet View All Answers.
+        Det som då ska visas är alla svar till den valda question. Ska jag lagra den i AnswerViewModel?
+         */
+
+        closeFragment();
+        clearMainActivityMembers();
+        openFragment("View all Answers");
+
+
+
     }
-
-
-
-
 
 
 

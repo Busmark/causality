@@ -2,21 +2,19 @@ package oscar.gmail.com.causality.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import oscar.gmail.com.causality.R;
-import oscar.gmail.com.causality.repository.Question;
 import oscar.gmail.com.causality.models.QuestionViewModel;
+import oscar.gmail.com.causality.repository.Question;
 
 /**
  * A fragment representing a list of Items.
@@ -79,7 +77,7 @@ public class QuestionListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-                questionViewModel = ((MainActivity) getActivity()).getModel();
+                questionViewModel = ((MainActivity) getActivity()).getQuestionViewModel();
                 upToDateListOfQuestions = questionViewModel.getQuestions();
             recyclerView.setAdapter(new QuestionRecyclerViewAdapter(upToDateListOfQuestions, mListener));
         }

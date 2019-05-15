@@ -1,13 +1,13 @@
 package oscar.gmail.com.causality.repository;
 
+import java.util.UUID;
+
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
-import androidx.annotation.NonNull;
-
-import java.util.UUID;
 
 /**
  *
@@ -27,6 +27,9 @@ public class Answer {
     @ColumnInfo(name = "answer_id")
     private String id;
 
+    @ColumnInfo(name = "alarm_date")
+    private String alarmDate;
+
     @ColumnInfo(name = "fk_question_id")
     public String fkQuestionId;
 
@@ -38,10 +41,11 @@ public class Answer {
      * @param fkQuestionId
      * @param answerText
      */
-    public Answer(@NonNull String fkQuestionId, String answerText) {
+    public Answer(@NonNull String fkQuestionId, String answerText, String alarmDate) {
         this.id = UUID.randomUUID().toString();
         this.fkQuestionId = fkQuestionId;
         this.answerText = answerText;
+        this.alarmDate = alarmDate;
     }
 
     @NonNull
@@ -67,5 +71,13 @@ public class Answer {
 
     public void setAnswerText(String answerText) {
         this.answerText = answerText;
+    }
+
+    public String getAlarmDate() {
+        return alarmDate;
+    }
+
+    public void setAlarmDate(String alarmDate) {
+        this.alarmDate = alarmDate;
     }
 }

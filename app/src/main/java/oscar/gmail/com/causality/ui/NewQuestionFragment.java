@@ -74,6 +74,6 @@ public class NewQuestionFragment extends Fragment implements View.OnClickListene
         //todo: möjlig tightCoupling här. Ska jag ändra till att anropa ett interface med samma metoder i som MainActivity har?
         ((MainActivity) getActivity()).clearMainActivityMembers();
 
-            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 }

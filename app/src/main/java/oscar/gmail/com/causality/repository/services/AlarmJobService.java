@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.PersistableBundle;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -38,11 +39,10 @@ public class AlarmJobService extends JobService {
                 int h = Integer.parseInt(hour);
                 int m = Integer.parseInt(mins);
 
-                //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmm");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Calendar calendar = Calendar.getInstance();
                 Date currentDate = new Date();
                 calendar.setTime(currentDate);
-
                 calendar.set(Calendar.HOUR_OF_DAY, h);
                 calendar.set(Calendar.MINUTE, m);
 
@@ -57,11 +57,13 @@ public class AlarmJobService extends JobService {
                         calendar.add(Calendar.DATE, 0);
                         dayToAdd++;
                     }
+                    String alarmDate = dateFormat.format(calendar.getTime());
 
                     // intent
                     Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
                     intent.putExtra("text", questionText);
                     intent.putExtra("id", questionId);
+                    intent.putExtra("alarmDate", alarmDate);
 
                     intent.setAction("MY_NOTIFICATION_MESSAGE");
 

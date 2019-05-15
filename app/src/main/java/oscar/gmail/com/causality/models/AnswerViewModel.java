@@ -2,7 +2,6 @@ package oscar.gmail.com.causality.models;
 
 import android.app.Application;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -25,12 +24,9 @@ public class AnswerViewModel extends AndroidViewModel {
     public AnswerViewModel(Application application) {
         super(application);
         answerRepository = new AnswerRepository(application);
-        //answers = answerRepository.getAllAnswers();
-
         answerRepository.getAllAnswers().observeForever(answers -> {
             this.answers = answers;
         });
-
     }
 
     /**
@@ -45,21 +41,11 @@ public class AnswerViewModel extends AndroidViewModel {
         return tempQuestion;
     }
 
+    //todo: nödlösning. Hitta bättre funktion. Den här klarar inte device config changes.
     public void setTempQuestion(Question tempQuestion) {
         this.tempQuestion = tempQuestion;
     }
 
-    public List<Answer> getAllAnswersForAQuestion(String questionId) {
-        List<Answer> toBeReturned = new ArrayList<>();
-
-        getAllAnswers().forEach(answer -> {
-            if (answer.getFkQuestionId().equals(questionId)) {
-                toBeReturned.add(answer);
-            }
-        });
-      return toBeReturned;
-
-    }
 
     /**
      *

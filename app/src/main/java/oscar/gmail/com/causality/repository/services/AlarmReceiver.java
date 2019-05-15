@@ -16,7 +16,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String questionText = intent.getStringExtra("text");
         String questionId = intent.getStringExtra("id");
+        String alarmDate = intent.getStringExtra("alarmDate");
 
-         new NotificationNotifier(context, questionText, questionId);
+         new NotificationNotifier(context, questionText, questionId, alarmDate);
     }
 }

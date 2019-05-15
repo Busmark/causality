@@ -28,12 +28,7 @@ public class NotificationReceiver extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         try {
-            // todo: hur illa är det att min bakgrundsservice pratar direkt med databasen?
-            //AppDatabase db = AppDatabase.getDatabase(this);
-
             AnswerRepository answerRepository = new AnswerRepository(this.getApplication());
-
-            // kan ett alternativ vara att jag tar reda på qId genom qText och sen ser till att två frågor inte får ha samma text?
             Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
             if (remoteInput != null) {
                 // tar emot svaret
@@ -41,10 +36,9 @@ public class NotificationReceiver extends IntentService {
                         KEY_TEXT_REPLY).toString();
                 //tar emot frågans id
                 String questionId = intent.getStringExtra("questionId");
+                String alarmDate = intent.getStringExtra("alarmDate");
 
-                answerRepository.insert(new Answer(questionId, inputString));
-
-                //db.answerDao().insert(new Answer(questionId, inputString));
+                answerRepository.insert(new Answer(questionId, inputString, alarmDate));
 
                 int notificationId = intent.getIntExtra("notificationId", 0);
 

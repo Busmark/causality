@@ -1,9 +1,12 @@
 package oscar.gmail.com.causality.ui;
 
+import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -14,15 +17,21 @@ import oscar.gmail.com.causality.repository.Answer;
 class AnswerRecyclerViewAdapter extends RecyclerView.Adapter<AnswerRecyclerViewAdapter.ViewHolder> {
     private final String TAG = "causalityapp";
 
-    private List<Answer> answers; // Cached copy of words
+    private List<Answer> answers; // Cached copy of answers
 
     /**
-     *
+     * If no answers is in list the user gets a Toast.
      * @param items A list of questions to be displayed.
-     * @param
+     * @param context The parent context for Toast.
      */
-    public AnswerRecyclerViewAdapter(List<Answer> items) {
+    public AnswerRecyclerViewAdapter(List<Answer> items, Context context) {
         answers = items;
+
+        if(answers.size() == 0) {
+            Toast toast = Toast.makeText(context ,"No answers to show", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 
     /**
@@ -39,17 +48,20 @@ class AnswerRecyclerViewAdapter extends RecyclerView.Adapter<AnswerRecyclerViewA
     }
 
     /**
-     * Binds an onClickListener to each fragment_question
+     * Binds an onClickListener to each fragment_question and runs through the class member list of objects.
+     * Dont get triggered if the question has no answers because the list is empty and cant be recycled through.
      * @param holder
      * @param position
      */
     @Override
     public void onBindViewHolder(final AnswerRecyclerViewAdapter.ViewHolder holder, int position) {
         holder.mItem = answers.get(position);
-        holder.mContentView.setText(answers.get(position).getAnswerText());
-        holder.mView.setOnClickListener(v -> {
 
-        });
+        CharSequence ch = answers.get(position).getAlarmDate() + " - " + answers.get(position).getAnswerText();
+
+        holder.mContentView.setText(ch);
+
+
     }
 
     @Override

@@ -55,6 +55,7 @@ public class QuestionViewModel extends AndroidViewModel {
         return questions;
     }
 
+    //todo: Fix this. The method has no function to handle failure. Use getResult() in this class.
     /**
      *
      * @param question
@@ -67,7 +68,7 @@ public class QuestionViewModel extends AndroidViewModel {
 
     /**
      *
-     * @return An 0 or 1 depending if the insert(question) was fail or success.
+     * @return An 0 or 1 depending if the latest insert(question) was fail or success.
      */
     public LiveData<Integer> getInsertResult() {
         return insertResult;
@@ -93,9 +94,7 @@ public class QuestionViewModel extends AndroidViewModel {
             notification_time = "1000";
         }
         String questionId = insert(new Question(text, notification_time));
-
         scheduleJob(context, text, questionId, notification_time, reps);
-
     }
 
     /**

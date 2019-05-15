@@ -1,14 +1,13 @@
 package oscar.gmail.com.causality;
 
-import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
-
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 import oscar.gmail.com.causality.repository.Answer;
 import oscar.gmail.com.causality.repository.AnswerDao;
 import oscar.gmail.com.causality.repository.Question;
@@ -17,7 +16,7 @@ import oscar.gmail.com.causality.repository.QuestionDao;
 /**
  *
  */
-@Database(entities = {Question.class, Answer.class}, version = 6, exportSchema = false)
+@Database(entities = {Question.class, Answer.class}, version = 7, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract QuestionDao questionDao();
@@ -57,7 +56,7 @@ public abstract class AppDatabase extends RoomDatabase {
             super.onOpen(db);
             // If you want to keep the data through app restarts,
             // comment out the following line.
-            new AppDatabase.PopulateDbAsync(INSTANCE).execute();
+//            new AppDatabase.PopulateDbAsync(INSTANCE).execute();
         }
     };
 
@@ -99,9 +98,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
             //hämta id på question
             String question1Id = questionDao.getQuestionId("Vad åt jag till middag?");
-            Answer answer1 = new Answer(question1Id, "soppa");
-            Answer answer2 = new Answer(question1Id, "fisk");
-            Answer answer3 = new Answer(question1Id, "ost");
+            Answer answer1 = new Answer(question1Id, "soppa", "2019-05-14"); // yyyy-MM-dd
+            Answer answer2 = new Answer(question1Id, "fisk", "2019-05-13");
+            Answer answer3 = new Answer(question1Id, "ost", "2019-05-12");
 
             answerDao.insert(answer1);
             answerDao.insert(answer2);

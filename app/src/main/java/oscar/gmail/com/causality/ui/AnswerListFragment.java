@@ -82,7 +82,7 @@ public class AnswerListFragment extends Fragment {
                     toBeListed.add(answer);
                 }
             });
-            recyclerView.setAdapter(new AnswerRecyclerViewAdapter(toBeListed));
+            recyclerView.setAdapter(new AnswerRecyclerViewAdapter(toBeListed, context));
 
         }
         return view;

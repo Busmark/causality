@@ -134,34 +134,12 @@ public class MainActivity extends AppCompatActivity implements QuestionListFragm
         }
     }
 
-    //under development
-    //todo: När denna kommer in har användaren klickat på en Question.
-    // då ska denna question sparas ner till viewModellen för att sedan ligga till grund för
-    // att hämta alla Answer som hör till Question. Dessa ska recyclas i en View så att de dyker upp under
-    // ViewAllAnswers.
     @Override
     public void onListFragmentInteraction(Question item) {
 
         answerViewModel.setTempQuestion(item);
-
-//        List<Answer> answers = answerViewModel.getAllAnswersForAQuestion(item.getId());
-//        answers.forEach(answer -> Log.i(TAG, "Date:  " + "Answer: " + answer.getAnswerText()));
-
-
-        /*
-        När en Question har blivit klickad på vill jag stänga ner fragmentet View All Questions
-        och därefter öppna fragmemntet View All Answers.
-        Det som då ska visas är alla svar till den valda question. Ska jag lagra den i AnswerViewModel?
-         */
-
         closeFragment();
         clearMainActivityMembers();
         openFragment("View all Answers");
-
-
-
     }
-
-
-
 }

@@ -24,7 +24,7 @@ public class NotificationNotifier {
     private static String KEY_TEXT_REPLY = "key_text_reply";
 
 
-    public NotificationNotifier(Context context, String questionText, String questionId) {
+    public NotificationNotifier(Context context, String questionText, String questionId, String alarmDate) {
         this.mainActivityContext = context;
         notificationManager =
                 (NotificationManager)
@@ -33,7 +33,7 @@ public class NotificationNotifier {
         createNotificationChannel(channelID,
                 "Causality alarm", "Causality Channel");
 
-        sendNotification(questionText, questionId);
+        sendNotification(questionText, questionId, alarmDate);
     }
 
     /**
@@ -66,7 +66,7 @@ public class NotificationNotifier {
      * @param questionText  The notification question to device user.
      * @param questionId    The questions identifier value. Needed for saving the answer.
      */
-    public void sendNotification(String questionText, String questionId) {
+    public void sendNotification(String questionText, String questionId, String alarmDate) {
         String replyLabel = "Enter your answer here";
 
         Intent intent = new Intent(mainActivityContext, NotificationReceiver.class);
@@ -75,6 +75,7 @@ public class NotificationNotifier {
 
         intent.putExtra("questionText", questionText);
         intent.putExtra("questionId", questionId);
+        intent.putExtra("alarmDate", alarmDate);
         intent.putExtra("notificationId", randomNumberForNotificationId);
 
         PendingIntent resultPendingIntent =

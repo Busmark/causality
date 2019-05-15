@@ -1,12 +1,11 @@
 package oscar.gmail.com.causality.repository;
 
 import android.app.Application;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import android.os.AsyncTask;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import oscar.gmail.com.causality.AppDatabase;
 
 public class QuestionRepository {
@@ -32,10 +31,6 @@ public class QuestionRepository {
 
     public void insert(Question question) {
         insertAsync(question);
-    }
-
-    public String getLatestSavedQuestionId(String text) {
-        return mQuestionDao.getQuestionId(text);
     }
 
     /**
